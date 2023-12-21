@@ -11,6 +11,16 @@
    esc_br - устанавливает обычный цвет фона
    esc_bb - устанавливает жирный цвет фона
    getbkgcolor - получение цвета фона терминала
+
+Использование:
+   {
+      pl::Color c;
+      std::cout
+         <<c.esc_tb(pl::Color::color::CYAN)
+         <<"W"
+         <<c.esc_c()
+         <<": тест использования нового класса pl::Color\n";
+   }
 */
 
 #ifndef PL_PLCOLOR_HH
@@ -24,11 +34,6 @@
 
 namespace pl
 {
-//------------------------------------------------------------------------------
-enum eColor 
-{
-   BLACK=0,RED=1,GREEN=2,YELLOW=3,BLUE=4,MAGENTA=5,CYAN=6,WHITE=7,CURRENT=1000
-};
 ////////////////////////////////////////////////////////////////////////////////
 class Color 
 {
@@ -63,6 +68,10 @@ public:
       delete[] m_backgroundColorRegular;
       delete[] m_backgroundColorBold;
    }
+   enum color 
+   {
+      BLACK=0,RED=1,GREEN=2,YELLOW=3,BLUE=4,MAGENTA=5,CYAN=6,WHITE=7,CURRENT=1000
+   };
    //---------------------------------------------------------------------------
    // Возвращает строку сброса цветовой esc-последовательности.
    //
@@ -77,7 +86,7 @@ public:
    // насыщенности по заданному index_ от 0 до 7 включительно.
    //
    std::string 
-   esc_tr(eColor index_)
+   esc_tr(color index_)
    { 
       return m_textColorRegular[index_]; 
    }
@@ -87,7 +96,7 @@ public:
    // насыщенности по заданному index_ от 0 до 7 включительно.
    //
    std::string 
-   esc_tb(eColor index_)
+   esc_tb(color index_)
    { 
       return m_textColorBold[index_]; 
    }
@@ -97,7 +106,7 @@ public:
    // насыщенности по заданному index_ от 0 до 7 включительно.
    //
    std::string 
-   esc_br(eColor index_ )
+   esc_br(color index_ )
    { 
       return m_backgroundColorRegular[index_]; 
    }
@@ -107,21 +116,21 @@ public:
    // насыщенности по заданному index_ от 0 до 7 включительно.
    //
    std::string 
-   esc_bb(eColor index_)
+   esc_bb(color index_)
    { 
       return m_backgroundColorBold[index_]; 
    }
    //---------------------------------------------------------------------------
    // Получение цвета фона терминала (Linux), консоли (Windows).
-   // Возвращает индекс цвета перечисления eColor.
+   // Возвращает индекс цвета перечисления color.
    //
-   eColor 
+   color 
    getbkgcolor()
    {
-      eColor backgroundColor;
+      color backgroundColor;
 
       #ifdef __linux__
-         backgroundColor=eColor::BLACK;
+         backgroundColor=color::BLACK;
       #elif _WIN32
          HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
          CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -129,19 +138,19 @@ public:
          GetConsoleScreenBufferInfo(hConsole,&csbi);
          // Извлекаем цвет фона.
          WORD backgroundColor=csbi.wAttributes&0xF0;
-         backgroundColor=static_cast<Color>(backgroundColor);
+         backgroundColor=static_cast<color>(backgroundColor);
       #endif
 
-      if(backgroundColor!=eColor::BLACK  && 
-         backgroundColor!=eColor::RED    && 
-         backgroundColor!=eColor::GREEN  && 
-         backgroundColor!=eColor::YELLOW && 
-         backgroundColor!=eColor::BLUE   && 
-         backgroundColor!=eColor::MAGENTA&& 
-         backgroundColor!=eColor::CYAN   && 
-         backgroundColor!=eColor::WHITE) 
+      if(backgroundColor!=color::BLACK  && 
+         backgroundColor!=color::RED    && 
+         backgroundColor!=color::GREEN  && 
+         backgroundColor!=color::YELLOW && 
+         backgroundColor!=color::BLUE   && 
+         backgroundColor!=color::MAGENTA&& 
+         backgroundColor!=color::CYAN   && 
+         backgroundColor!=color::WHITE) 
       {
-         backgroundColor=eColor::BLACK;
+         backgroundColor=color::BLACK;
       }
       return backgroundColor;
    }
