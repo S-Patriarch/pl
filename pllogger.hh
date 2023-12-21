@@ -9,8 +9,8 @@
    read()  - чтение строки из журнала логов
 */
 
-#ifndef __PL_PLLOGGER_HH__
-#define __PL_PLLOGGER_HH__
+#ifndef PL_PLLOGGER_HH
+#define PL_PLLOGGER_HH
 
 #include <fstream>
 #include <iostream>
@@ -86,5 +86,5 @@ public:
 }; // class pl::Logger
 } // namespace pl
 
-#endif // __PL_PLLOGGER_HH__
+#endif // PL_PLLOGGER_HH
 

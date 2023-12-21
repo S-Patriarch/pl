@@ -13,8 +13,8 @@
    getbkgcolor - получение цвета фона терминала
 */
 
-#ifndef __PL_PLCOLOR_HH__
-#define __PL_PLCOLOR_HH__
+#ifndef PL_PLCOLOR_HH
+#define PL_PLCOLOR_HH
 
 #include <string>
 
@@ -148,5 +148,5 @@ public:
 }; // class pl::Color
 } // namespace pl 
 
-#endif // __PL_PLCOLOR_HH__
+#endif // PL_PLCOLOR_HH
 

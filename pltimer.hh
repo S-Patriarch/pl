@@ -11,8 +11,8 @@
    duration_seconds()      - результат замера в секундах
 */
 
-#ifndef __PL_PLTIMER_HH__
-#define __PL_PLTIMER_HH__
+#ifndef PL_PLTIMER_HH
+#define PL_PLTIMER_HH
 
 #include <chrono>
 
@@ -56,5 +56,5 @@ public:
 }; // class pl::Timer
 } // namespace pl
 
-#endif // __PL_PLTIMER_HH__
+#endif // PL_PLTIMER_HH
 

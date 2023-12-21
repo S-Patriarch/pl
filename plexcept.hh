@@ -26,8 +26,8 @@
    }
 */
 
-#ifndef __PL_PLEXCEPT_HH__
-#define __PL_PLEXCEPT_HH__
+#ifndef PL_PLEXCEPT_HH
+#define PL_PLEXCEPT_HH
 
 #include <exception>
 
@@ -56,5 +56,5 @@ public:
 }; // class pl::Exception
 } // namespace pl
 
-#endif // __PL_PLEXCEPT_HH__
+#endif // PL_PLEXCEPT_HH
 

@@ -18,8 +18,8 @@
    setconsoleWIN32rus() - локализация консоли OS Windows для ввода/вывода
 */
 
-#ifndef __PL_PLCONIO_HH__
-#define __PL_PLCONIO_HH__
+#ifndef PL_PLCONIO_HH
+#define PL_PLCONIO_HH
 
 #include <iostream>
 
@@ -203,5 +203,5 @@ public:
 }; // class pl::Conio
 } // namespace pl
 
-#endif // __PL_PLCONIO_HH__
+#endif // PL_PLCONIO_HH
 
