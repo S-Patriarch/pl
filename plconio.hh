@@ -38,8 +38,8 @@ class Conio
 {
    struct textinfo
    {
-      unsigned short int s_cur_x{0};
-      unsigned short int s_cur_y{0};
+      unsigned short s_cur_x{0};
+      unsigned short s_cur_y{0};
    } text;
 public:
    //---------------------------------------------------------------------------
@@ -83,7 +83,7 @@ public:
    // Постановка курсора в координату x_ и y_ терминала.
    //
    void
-   gotoxy(unsigned short int x_,unsigned short int y_)
+   gotoxy(unsigned short x_,unsigned short y_)
    {
       std::cout
          <<"\033["
@@ -97,7 +97,7 @@ public:
    //---------------------------------------------------------------------------
    // Возвращает установленную координату text.s_cur_x.
    //
-   unsigned short int
+   unsigned short
    wherex()
    {
       return text.s_cur_x;
@@ -105,7 +105,7 @@ public:
    //---------------------------------------------------------------------------
    // Возвращает установленную координату text.s_cur_y.
    //
-   unsigned short int
+   unsigned short
    wherey()
    {
       return text.s_cur_y;
@@ -117,10 +117,10 @@ public:
    // Аналог функции _getch() в стандартной библиотеке conio.h <OS Windows>.
    // Реализация данной функции предназначена для работы в терминале OS Linux.
    //
-   signed int
+   signed
    getch()
    {
-      signed int charBuffer{0};
+      signed charBuffer{0};
       struct termios old{0};
 
       if(tcgetattr(0,&old)<0)

@@ -37,7 +37,7 @@ namespace pl
 ////////////////////////////////////////////////////////////////////////////////
 class Color 
 {
-   unsigned short int m_sizeArray{8};
+   unsigned short m_sizeArray{8};
    std::string* m_textColorRegular; 
    std::string* m_textColorBold;    
    std::string* m_backgroundColorRegular;
