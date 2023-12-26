@@ -23,7 +23,7 @@
       pl::ProgressBar pb;
       pb.set_min(0);
       pb.set_max(100);
-      pb.set_style("complete","%","#");
+      pb.set_style("complete","%","#",".");
       pb.set_message("выполнено...");
       pb.set_brackets("[","]");
       pb.set_color(pl::Color::color::CURRENT,"tr");
@@ -61,7 +61,8 @@ class ProgressBar
    pl::Color::color m_barColor{pl::Color::color::CURRENT};
    std::string m_barColorStyle{"tr"}; // tr - обычный цвет текста
                                       // tb - жырный цвет текста
-   std::string m_bar{"#"};
+   std::string m_bar{"#"};          // Символ отрисовки прогресса индикатора.
+   std::string m_barSubstrate{" "}; // Символ подложки прогресса индикатора.
    std::string m_style{"complete"};
    std::string m_percent{"%"};
    std::string m_message{""};
@@ -141,11 +142,13 @@ public:
    // Перегруженная функция.
    //
    void
-   set_style(std::string style_,std::string percent_,std::string bar_)
+   set_style(std::string style_,std::string percent_,
+             std::string bar_,std::string barSubstrate)
    {
       m_style=style_;
       m_percent=percent_;
       m_bar=bar_;
+      m_barSubstrate=barSubstrate;
    }
    //---------------------------------------------------------------------------
    // Установка ширины индикатора.
@@ -201,7 +204,7 @@ public:
          else
          {
             std::cout
-               <<" ";
+               <<m_barSubstrate;
          }
       }
       std::cout
