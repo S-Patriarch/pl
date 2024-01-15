@@ -1,14 +1,6 @@
 //
 // (c) 2024 S-Patriarch
-// (PL) Patriarch library : pltimer.hh
-//
-// Класс pl::Timer для замера времени работы кода.
-//
-// Компонентные функции:
-//    start() - начало замера
-//    stop()  - завершение замера
-//    duration_milliseconds() - результат замера в миллисекундах
-//    duration_seconds()      - результат замера в секундах
+// Patriarch library : pltimer.hh
 //
 #ifndef PL_PLTIMER_HH
 #define PL_PLTIMER_HH
@@ -16,9 +8,15 @@
 #include <chrono>
 
 namespace pl {
-   /////////////////////////////////////////////////////////////////////////////
    class Timer {
-   private:
+      // класс для замера времени работы кода
+      //
+      // компонентные функции:
+      // start() - начало замера
+      // stop()  - завершение замера
+      // duration_milliseconds() - результат замера в миллисекундах
+      // duration_seconds()      - результат замера в секундах
+  private:
       std::chrono::time_point<std::chrono::high_resolution_clock> m_start_time;
       std::chrono::time_point<std::chrono::high_resolution_clock> m_end_time;
    public:
@@ -43,7 +41,5 @@ namespace pl {
          return duration.count();
       }
    };
-} // namespace pl
-
+}
 #endif // PL_PLTIMER_HH
-
