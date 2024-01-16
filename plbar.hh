@@ -70,7 +70,7 @@ namespace pl {
       void set_message(std::string message) {m_message = message;}
       void set_brackets(std::string bracket_left, std::string bracket_rigth)
       {
-         m_bracketLeft = bracket_left_;
+         m_bracketLeft = bracket_left;
          m_bracketRigth = bracket_rigth;
       }
       void set_color(pl::Color::color color_, std::string color_text = "tr")
@@ -100,7 +100,6 @@ namespace pl {
          float progress_ = static_cast<float>(index_)/m_maxIterations;
          std::uint16_t completedWidth_ =
             static_cast<std::uint16_t>(progress_*m_barWidth);
-
          pl::Color c;
          // вывод индикатора выполнения
          std::cout << m_bracketLeft;
