@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <mutex>
 #include <shared_mutex>
 
 namespace pl {
@@ -57,8 +58,8 @@ namespace pl {
          // объект lck будет автоматически освобожден при выходе из
          // области видимости
       {
-         std::shared_lock<std::shared_mutex> lck(m_mutex);
          std::string s_res {};
+         std::shared_lock<std::shared_mutex> lck(m_mutex);
          if (m_file.is_open()) std::getline(m_file, s_res);
          return s_res;
       }
