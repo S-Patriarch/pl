@@ -11,8 +11,8 @@
 
 namespace pl {
    class hierarchical_mutex {
-   	// иерархия блокировок
-      //	иерархия блокировок позволяет обеспечить средство проверки соблюдения
+      // иерархия блокировок
+      // иерархия блокировок позволяет обеспечить средство проверки соблюдения
       // соглашения в ходе выполнения программы
       // замысел заключается в том, чтобы разбить приложение на уровни и
       // идентифицировать все мьютексы, которые могут быть заблокированы на 
@@ -45,14 +45,14 @@ namespace pl {
       // unlock()   - разблокирует мьютекс
       // try_lock() - пытается заблокировать мьютекс
    private:
-   	std::mutex                         m_internal_mutex;
-   	unsigned long const                m_hierarchy_value;
-   	unsigned long                      m_previous_hierarchy_value;
-   	static thread_local unsigned long  m_this_thread_hierarchy_value;
+      std::mutex                         m_internal_mutex;
+      unsigned long const                m_hierarchy_value;
+      unsigned long                      m_previous_hierarchy_value;
+      static thread_local unsigned long  m_this_thread_hierarchy_value;
       void check_for_hierarchy_violation()
       {
       	if (m_this_thread_hierarchy_value<=m_hierarchy_value)
-      		throw std::logic_error("E: Иерархия мьютексов нарушена.");
+            throw std::logic_error("E: Иерархия мьютексов нарушена.");
       }
       void update_hierarchy_value()
       {
@@ -60,30 +60,30 @@ namespace pl {
          m_this_thread_hierarchy_value = m_hierarchy_value;
       }
    public:
-   	explicit hierarchical_mutex(unsigned long value) :
-   	   m_hierarchy_value{value},
-   	   m_previous_hierarchy_value{0}
-   	{}
-   	void lock()
-   	{
-   		check_for_hierarchy_violation();
-   		m_internal_mutex.lock();
-   		update_hierarchy_value();
-   	}
-   	void unlock()
-   	{
-   		if (m_this_thread_hierarchy_value!=m_hierarchy_value)
-   			throw std::logic_error("E: Иерархия мьютексов нарушена.");
-   		m_this_thread_hierarchy_value = m_previous_hierarchy_value;
-   		m_internal_mutex.unlock();
-   	}
-   	bool try_lock()
-   	{
-   		check_for_hierarchy_violation();
-   		if (!m_internal_mutex.try_lock()) return false;
-   		update_hierarchy_value();
-   		return true;
-   	}
+      explicit hierarchical_mutex(unsigned long value) :
+         m_hierarchy_value{value},
+         m_previous_hierarchy_value{0}
+      {}
+      void lock()
+      {
+         check_for_hierarchy_violation();
+         m_internal_mutex.lock();
+         update_hierarchy_value();
+      }
+      void unlock()
+      {
+         if (m_this_thread_hierarchy_value!=m_hierarchy_value)
+            throw std::logic_error("E: Иерархия мьютексов нарушена.");
+         m_this_thread_hierarchy_value = m_previous_hierarchy_value;
+         m_internal_mutex.unlock();
+      }
+      bool try_lock()
+      {
+         check_for_hierarchy_violation();
+         if (!m_internal_mutex.try_lock()) return false;
+         update_hierarchy_value();
+         return true;
+      }
    };
    thread_local unsigned long
    hierarchical_mutex::m_this_thread_hierarchy_value{ULONG_MAX};
