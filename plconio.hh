@@ -6,7 +6,7 @@
 #define PL_PLCONIO_HH
 
 #include <iostream>
-#include <cstdint>
+#include <ostream>
 
 #ifdef __linux__
 #include <termios.h>
@@ -17,6 +17,22 @@
 #endif
 
 namespace pl {
+   namespace mr {
+      // встраиваемые функции:
+      // clrscr - очистка терминала и постановка курсора в верхний левый угол
+      // clreol - удалает все символы после курсора до конца строки
+      // crsh   - скрыть курсор
+      // crss   - показать курсор
+      //
+      // использование:
+      // {
+      //    std::cout << pl::mr::clrscr;
+      // }
+      inline std::ostream& clrscr(std::ostream& os) {return os << "\033[2J\033[1;1H";}
+      inline std::ostream& clreol(std::ostream& os) {return os << "\033[K";}
+      inline std::ostream& crsh(std::ostream& os) {return os << "\033[?25l";}
+      inline std::ostream& crss(std::ostream& os) {return os << "\033[?25h";}
+   }
    class Conio {
       // работа с терминалом
       //
@@ -34,29 +50,29 @@ namespace pl {
       // set_console_WIN32_rus() - локализация консоли OS Windows для ввода/вывода
    private:
       struct Text_info {
-         std::uint16_t x {0};
-         std::uint16_t y {0};
+         unsigned short int x {0};
+         unsigned short int y {0};
       } text;
    public:
       void clr_scr() {std::cout << "\033[2J\033[1;1H";}
       void clr_eol() {std::cout << "\033[K";}
       void crs_h()   {std::cout << "\033[?25l";}
       void crs_s()   {std::cout << "\033[?25h";}
-      void goto_xy(std::uint16_t x, std::uint16_t y)
+      void goto_xy(unsigned short int x, unsigned short int y)
       {
          std::cout << "\033[" << y << ";" << x << "H";
          text.x = x;
          text.y = y;
       }
-      std::uint16_t where_x() {return text.x;}
-      std::uint16_t where_y() {return text.y;}
+      unsigned short int where_x() {return text.x;}
+      unsigned short int where_y() {return text.y;}
 #ifdef __linux__
-      std::int32_t get_ch()
+      int get_ch()
          // получение символа с клавиатуры без ожидания нажатия enter
          // аналог функции _getch() в стандартной библиотеке conio.h <OS Windows>
          // реализация данной функции предназначена для работы в терминале OS Linux
       {
-         std::int32_t buf {0};
+         int buf {0};
          struct termios old {0};
          if (tcgetattr(0, &old)<0) perror("tcsetattr()");
          old.c_lflag &= ~ICANON;

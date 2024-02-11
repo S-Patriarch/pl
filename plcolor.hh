@@ -6,12 +6,38 @@
 #define PL_PLCOLOR_HH
 
 #include <string>
+#include <ostream>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
 namespace pl {
+   namespace mr {
+      // встраиваемые функции: 
+      // reset       - выключение всех атрибутов
+      // bold        - жирный или увеличить яркость
+      // faint       - блеклый или уменьшить яркость
+      // italic      - курсив
+      // underline   - подчеркнутый один раз
+      // crossed_out - зачеркнутый
+      // reset_fg    - цвет текста по умолчанию на переднем плане
+      // reset_bg    - цвет фона по умолчанию
+      //
+      // использование:
+      // {
+      //    std::cout << pl::mr::bold << "текст" << pl::mr::reset;
+      // }
+      inline std::ostream& reset(std::ostream& os)       {return os << "\033[0m";}
+      inline std::ostream& bold(std::ostream& os)        {return os << "\033[1m";}  
+      inline std::ostream& faint(std::ostream& os)       {return os << "\033[2m";}
+      inline std::ostream& italic(std::ostream& os)      {return os << "\033[3m";}
+      inline std::ostream& underline(std::ostream& os)   {return os << "\033[4m";}
+      inline std::ostream& inverse(std::ostream& os)     {return os << "\033[7m";}
+      inline std::ostream& crossed_out(std::ostream& os) {return os << "\033[9m";}
+      inline std::ostream& reset_fg(std::ostream& os)    {return os << "\033[39m";}
+      inline std::ostream& reset_bg(std::ostream& os)    {return os << "\033[49m";}
+   }
    class Color {
       // работа с цветовой esc-последовательностью в терминале
       //
@@ -26,16 +52,16 @@ namespace pl {
       // использование:
       // {
       //    pl::Color c;
-      //    std::cout << c.esc_tb(pl::Color::color::CYAN) << "W" << c.esc_c()
+      //    std::cout << c.esc_tb(pl::Color::color::CYAN) << 'W' << c.esc_c()
       //              <<": тест использования нового класса pl::Color\n";
       // }
    private:
-      unsigned short int m_sizeArray {8};
-      std::string*       m_textColorRegular; 
-      std::string*       m_textColorBold;    
-      std::string*       m_backgroundColorRegular;
-      std::string*       m_backgroundColorBold;
-      std::string        m_colorClear;
+      unsigned short int  m_sizeArray {8};
+      std::string*        m_textColorRegular; 
+      std::string*        m_textColorBold;    
+      std::string*        m_backgroundColorRegular;
+      std::string*        m_backgroundColorBold;
+      std::string         m_colorClear;
    public:
       Color()
       { 
