@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <ostream>
+#include <cstring>
+#include <cstdio>
 
 #ifdef __linux__
 #include <termios.h>
@@ -37,14 +39,15 @@ namespace pl {
       // работа с терминалом
       //
       // компонентные функции:
-      // clr_scr() - очистка терминала и постановка курсора в верхний левый угол
-      // clr_eol() - удалает все символы после курсора до конца строки
-      // crs_h()   - скрыть курсор
-      // crs_s()   - показать курсор
-      // goto_xy() - постановка курсора в координату x_ и y_ терминала
-      // where_x() - возвращает установленную координату text.s_cur_x
-      // where_y() - возвращает установленную координату text.s_cur_y
-      // get_ch()  - получение символа без ожидания нажатия enter <OS Linux>
+      // clr_scr()  - очистка терминала и постановка курсора в верхний левый угол
+      // clr_eol()  - удалает все символы после курсора до конца строки
+      // crs_h()    - скрыть курсор
+      // crs_s()    - показать курсор
+      // goto_xy()  - постановка курсора в координату x_ и y_ терминала
+      // where_x()  - возвращает установленную координату text.s_cur_x
+      // where_y()  - возвращает установленную координату text.s_cur_y
+      // get_ch()   - получение символа без ожидания нажатия enter <OS Linux>
+      // get_line() - считывает неформатированные данные из потока в строку
       // get_hidden_input()   - скрытый ввод в терминале OS Linux
       // set_locale_WIN32_rus()  - локализация консоли OS Windows для вывода
       // set_console_WIN32_rus() - локализация консоли OS Windows для ввода/вывода
@@ -104,6 +107,15 @@ namespace pl {
          return s_res;
       }
 #endif // __linux__
+      std::string get_line(const int bs)
+         // считывает неформатированные данные из потока в
+         // строку типа std::string
+      {
+         char buf[bs];
+         std::memset(buf,0,sizeof(buf));
+         std::fgets(buf,sizeof(buf),stdin);
+         return std::string(buf);
+      }
 #ifdef _WIN32
       void set_locale_WIN32_rus() {setlocale(LC_ALL,"Russian");}
       void set_console_WIN32_rus() 
