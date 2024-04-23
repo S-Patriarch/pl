@@ -15,9 +15,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define LISTENQ    1024 // максимальное количество клиентских соединений
-#define MAXLINE    4096 // максимальная длина текстовой строки
-#define BUFFSIZE   8192 // размер буфера для чтения и записи
+#define _LISTENQ    1024 // максимальное количество клиентских соединений
+#define _MAXLINE    4096 // максимальная длина текстовой строки
+#define _BUFFSIZE   8192 // размер буфера для чтения и записи
 
 namespace pl {
    class TCPip {
