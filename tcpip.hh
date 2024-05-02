@@ -38,114 +38,89 @@ namespace pl {
       // tcp_read()    - чтение данных из потока
       // tcp_write()   - запись данных в поток
       // tcp_fork()    - порождение дочернего процесса
+   private:
+      void error_ex(const char* str)
+      {
+         char  errmsg[mr::MAXLINE];
+         strcpy(errmsg,str);
+         char* s = std::strerror(errno);
+         throw Exception(strcat(errmsg,s));
+      }
    public:
       int tcp_socket(int domain, int type, int protocol)
          // создание сокета
       {
          int   n {};
-         if ((n = socket(domain,type,protocol))<0) {
-            char  errmsg[mr::MAXLINE] = "E: Socket error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if ((n = socket(domain,type,protocol))<0) 
+            error_ex("E: Socket error - ");
          return n;
       }
      void tcp_bind(int fd, const struct sockaddr* addr, socklen_t len)
          // привязка сокета
       {
-         if (bind(fd,addr,len)<0) {
-            char  errmsg[mr::MAXLINE] = "E: Bind error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if (bind(fd,addr,len)<0) 
+            error_ex("E: Bind error - ");
       }
       void tcp_listen(int fd, int n)
          // прослушивание подключений
       {
-         if (listen(fd,n)<0) {
-            char  errmsg[mr::MAXLINE] = "E: Listen error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if (listen(fd,n)<0) 
+            error_ex("E: Listen error - ");
       }
       int tcp_accept(int fd, struct sockaddr* addr, socklen_t* len)
          // прием данных
       {
          int   n {};
-         if ((n = accept(fd,addr,len))<0) {
-            char  errmsg[mr::MAXLINE] = "E: Accept error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if ((n = accept(fd,addr,len))<0) 
+            error_ex("E: Accept error - ");
          return n;
       }
       void tcp_connect(int fd, const struct sockaddr *addr, socklen_t len)
          // установка соединения
       {
-         if (connect(fd,addr,len)<0) {
-            char  errmsg[mr::MAXLINE] = "E: Connect error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if (connect(fd,addr,len)<0) 
+            error_ex("E: Connect error - ");
       }
       void tcp_close(int fd)
          // закрытие созданного сокета
       {
-         if (close(fd)<0) {
-            char  errmsg[mr::MAXLINE] = "E: Close error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if (close(fd)<0) 
+            error_ex("E: Close error - ");
       }
       ssize_t tcp_recv(int fd, void* ptr, size_t nbytes, int flags)
          // чтение данных из сокета
       {
          ssize_t n {};
-         if ((n = recv(fd,ptr,nbytes,flags))<0) {
-            char  errmsg[mr::MAXLINE] = "E: Recv error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if ((n = recv(fd,ptr,nbytes,flags))<0) 
+            error_ex("E: Recv error - ");
          return n;
       }
       void tcp_send(int fd, const void* ptr, size_t nbytes, int flags)
          // запись данных в сокет
       {
-         if (send(fd,ptr,nbytes,flags)<0) {
-            char  errmsg[mr::MAXLINE] = "E: Send error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if (send(fd,ptr,nbytes,flags)<0) 
+            error_ex("E: Send error - ");
       }
       ssize_t tcp_read(int fd, void* ptr, size_t nbytes)
          // чтение данных из потока
       {
          ssize_t n {};
-         if ((n = read(fd,ptr,nbytes))<0) {
-            char  errmsg[mr::MAXLINE] = "E: Read error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if ((n = read(fd,ptr,nbytes))<0) 
+            error_ex("E: Read error - ");
          return n;
       }
       void tcp_write(int fd, const void* ptr, size_t nbytes)
          // запись данных в поток
       {
-         if (write(fd,ptr,nbytes)<0) {
-            char  errmsg[mr::MAXLINE] = "E: Write error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if (write(fd,ptr,nbytes)<0) 
+            error_ex("E: Write error - ");
       }
      pid_t tcp_fork()
          // порождение дочернего процесса
       {
          pid_t pid {};
-         if ((pid = fork())<0) {
-            char  errmsg[mr::MAXLINE] = "E: Fork error - ";
-            char* s = std::strerror(errno);
-            throw Exception(strcat(errmsg,s));
-         }
+         if ((pid = fork())<0) 
+            error_ex("E: Fork error - ");
          return pid;
       }
    };
