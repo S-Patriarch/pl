@@ -37,6 +37,7 @@ namespace pl {
       // tcp_send()    - запись данных в сокет      
       // tcp_read()    - чтение данных из потока
       // tcp_write()   - запись данных в поток
+      // tcp_fork()    - порождение дочернего процесса
    public:
       int tcp_socket(int domain, int type, int protocol)
          // создание сокета
@@ -135,6 +136,17 @@ namespace pl {
             char* s = std::strerror(errno);
             throw Exception(strcat(errmsg,s));
          }
+      }
+     pid_t tcp_fork()
+         // порождение дочернего процесса
+      {
+         pid_t pid {};
+         if ((pid = fork())<0) {
+            char  errmsg[mr::MAXLINE] = "E: Fork error - ";
+            char* s = std::strerror(errno);
+            throw Exception(strcat(errmsg,s));
+         }
+         return pid;
       }
    };
 }
