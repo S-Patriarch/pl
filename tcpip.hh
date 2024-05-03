@@ -40,7 +40,6 @@ namespace pl {
       // tcp_read()             - чтение данных из потока
       // tcp_write()            - запись данных в поток
       // tcp_fork()             - порождение дочернего процесса
-      // tcp_sockfd_to_family() - получение семейства адресов сокета
    private:
       void error_ex(const char* str)
       {
@@ -78,7 +77,7 @@ namespace pl {
             error_ex("E: Accept error - ");
          return n;
       }
-      void tcp_connect(int fd, const struct sockaddr *addr, socklen_t len)
+      void tcp_connect(int fd, const struct sockaddr* addr, socklen_t len)
          // установка соединения
       {
          if (connect(fd,addr,len)<0) 
@@ -125,19 +124,6 @@ namespace pl {
          if ((pid = fork())<0) 
             error_ex("E: Fork error - ");
          return pid;
-      }
-      int tcp_sockfd_to_family(int sockfd)
-         // получение семейства адресов сокета
-      {
-         union {
-            struct sockaddr sa;
-            char data[mr::MAXSOCKADDR];
-         } un;
-         socklen_t len {};
-         len = mr::MAXSOCKADDR;
-         if (getsockname(sockfd,struct sockaddr* un.data,&len)<0)
-            return -1;
-         return un.sa.sa_family;
       }
    };
 }
