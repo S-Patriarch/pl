@@ -21,23 +21,26 @@
 
 namespace pl {
    namespace mr {
-      constexpr int LISTENQ  = 1024; // максимальное количество клиентских соединений
-      constexpr int MAXLINE  = 4096; // максимальная длина текстовой строки
-      constexpr int BUFFSIZE = 8192; // размер буфера для чтения и записи
+      constexpr int LISTENQ     = 1024; // максимальное количество клиентских соединений
+      constexpr int MAXLINE     = 4096; // максимальная длина текстовой строки
+      constexpr int BUFFSIZE    = 8192; // размер буфера для чтения и записи
+      constexpr int MAXSOCKADDR = 128;  // максимальный размер структуры адреса сокета
+      constexpr int SERV_PORT   = 9877; // клиент-серверы TCP и UDP
    }
    class TCPip {
       // компонентные функции:
-      // tcp_socket()  - создание сокета
-      // tcp_bind()    - привязка сокета
-      // tcp_listen()  - прослушивание подключений
-      // tcp_accept()  - прием данных
-      // tcp_connect() - установка соединения
-      // tcp_close()   - закрытие созданного сокета
-      // tcp_recv()    - чтение данных из сокета
-      // tcp_send()    - запись данных в сокет      
-      // tcp_read()    - чтение данных из потока
-      // tcp_write()   - запись данных в поток
-      // tcp_fork()    - порождение дочернего процесса
+      // tcp_socket()           - создание сокета
+      // tcp_bind()             - привязка сокета
+      // tcp_listen()           - прослушивание подключений
+      // tcp_accept()           - прием данных
+      // tcp_connect()          - установка соединения
+      // tcp_close()            - закрытие созданного сокета
+      // tcp_recv()             - чтение данных из сокета
+      // tcp_send()             - запись данных в сокет      
+      // tcp_read()             - чтение данных из потока
+      // tcp_write()            - запись данных в поток
+      // tcp_fork()             - порождение дочернего процесса
+      // tcp_sockfd_to_family() - получение семейства адресов сокета
    private:
       void error_ex(const char* str)
       {
@@ -115,13 +118,26 @@ namespace pl {
          if (write(fd,ptr,nbytes)<0) 
             error_ex("E: Write error - ");
       }
-     pid_t tcp_fork()
+      pid_t tcp_fork()
          // порождение дочернего процесса
       {
          pid_t pid {};
          if ((pid = fork())<0) 
             error_ex("E: Fork error - ");
          return pid;
+      }
+      int tcp_sockfd_to_family(int sockfd)
+         // получение семейства адресов сокета
+      {
+         union {
+            struct sockaddr sa;
+            char data[mr::MAXSOCKADDR];
+         } un;
+         socklen_t len {};
+         len = mr::MAXSOCKADDR;
+         if (getsockname(sockfd,struct sockaddr* un.data,&len)<0)
+            return -1;
+         return un.sa.sa_family;
       }
    };
 }
