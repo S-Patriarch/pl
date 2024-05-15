@@ -52,6 +52,7 @@ namespace pl {
          char* s = std::strerror(errno);
          throw Exception(strcat(errmsg,s));
       }
+      //------------------------------------------------------------------------
       Sigfunc* _signal(int signo, Sigfunc* func)
       {
          struct sigaction act;
@@ -83,18 +84,21 @@ namespace pl {
             error_ex("E: Socket error - ");
          return n;
       }
-     void tcp_bind(int fd, const struct sockaddr* addr, socklen_t len)
+      //------------------------------------------------------------------------
+      void tcp_bind(int fd, const struct sockaddr* addr, socklen_t len)
          // привязка сокета
       {
          if (bind(fd,addr,len)<0) 
             error_ex("E: Bind error - ");
       }
+      //------------------------------------------------------------------------
       void tcp_listen(int fd, int n)
          // прослушивание подключений
       {
          if (listen(fd,n)<0) 
             error_ex("E: Listen error - ");
       }
+      //------------------------------------------------------------------------
       int tcp_accept(int fd, struct sockaddr* addr, socklen_t* len)
          // прием данных
       {
@@ -103,18 +107,21 @@ namespace pl {
             error_ex("E: Accept error - ");
          return n;
       }
+      //------------------------------------------------------------------------
       void tcp_connect(int fd, const struct sockaddr* addr, socklen_t len)
          // установка соединения
       {
          if (connect(fd,addr,len)<0) 
             error_ex("E: Connect error - ");
       }
+      //------------------------------------------------------------------------
       void tcp_close(int fd)
          // закрытие созданного сокета
       {
          if (close(fd)<0) 
             error_ex("E: Close error - ");
       }
+      //------------------------------------------------------------------------
       ssize_t tcp_recv(int fd, void* ptr, size_t nbytes, int flags)
          // чтение данных из сокета
       {
@@ -123,12 +130,14 @@ namespace pl {
             error_ex("E: Recv error - ");
          return n;
       }
+      //------------------------------------------------------------------------
       void tcp_send(int fd, const void* ptr, size_t nbytes, int flags)
          // запись данных в сокет
       {
          if (send(fd,ptr,nbytes,flags)<0) 
             error_ex("E: Send error - ");
       }
+      //------------------------------------------------------------------------
       ssize_t tcp_read(int fd, void* ptr, size_t nbytes)
          // чтение данных из потока
       {
@@ -137,12 +146,14 @@ namespace pl {
             error_ex("E: Read error - ");
          return n;
       }
+      //------------------------------------------------------------------------
       void tcp_write(int fd, const void* ptr, size_t nbytes)
          // запись данных в поток
       {
          if (write(fd,ptr,nbytes)<0) 
             error_ex("E: Write error - ");
       }
+      //------------------------------------------------------------------------
       pid_t tcp_fork()
          // порождение дочернего процесса
       {
@@ -151,6 +162,7 @@ namespace pl {
             error_ex("E: Fork error - ");
          return pid;
       }
+      //------------------------------------------------------------------------
       Sigfunc* tcp_signal(int signo, Sigfunc* func)
          // обработчик сигналов
       {
