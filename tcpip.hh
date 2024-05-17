@@ -48,6 +48,7 @@ namespace pl {
       // tcp_writen()   - запись данных в поток
       // tcp_fork()     - порождение дочернего процесса
       // tcp_signal()   - обработчик сигналов 
+      // tcp_shutdown() - отправка сегмента FIN
       //
       // tcp_pthread_create() - создание потока
       // tcp_pthread_join()   - завершение потока
@@ -261,6 +262,14 @@ namespace pl {
          if ((sigfunc = _signal(signo,func))==SIG_ERR)
             error_ex("E: Signal error - ");
          return sigfunc;
+      }
+      //------------------------------------------------------------------------
+      void tcp_shutdown(int fd, int how)
+         // установка признака конца файла в стандартном потоке ввода
+         // отправка сегмента FIN
+      {
+         if (shutdown(fd,how)<0)
+            error_ex("E: Shutdown error - ");
       }
       //------------------------------------------------------------------------
       void tcp_pthread_create(pthread_t* tid, 
