@@ -16,6 +16,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <signal.h>
+#include <pthread.h>
 
 #include <cerrno>
 #include <cstring>
@@ -32,19 +33,31 @@ namespace pl {
    }
    class TCPip {
       // компонентные функции:
-      // tcp_socket()  - создание сокета
-      // tcp_bind()    - привязка сокета
-      // tcp_listen()  - прослушивание подключений
-      // tcp_accept()  - прием данных
-      // tcp_connect() - установка соединения
-      // tcp_close()   - закрытие созданного сокета
-      // tcp_recv()    - чтение данных из сокета
-      // tcp_send()    - запись данных в сокет      
-      // tcp_read()    - чтение данных из потока
-      // tcp_write()   - запись данных в поток
-      // tcp_fork()    - порождение дочернего процесса
-      // tcp_signal()  - обработчик сигналов 
+      //
+      // tcp_socket()   - создание сокета
+      // tcp_bind()     - привязка сокета
+      // tcp_listen()   - прослушивание подключений
+      // tcp_accept()   - прием данных
+      // tcp_connect()  - установка соединения
+      // tcp_close()    - закрытие созданного сокета
+      // tcp_recv()     - чтение данных из сокета
+      // tcp_send()     - запись данных в сокет      
+      // tcp_read()     - чтение данных из потока
+      // tcp_readline() - чтение данных из потока
+      // tcp_write()    - запись данных в поток
+      // tcp_writen()   - запись данных в поток
+      // tcp_fork()     - порождение дочернего процесса
+      // tcp_signal()   - обработчик сигналов 
+      //
+      // tcp_pthread_create() - создание потока
+      // tcp_pthread_join()   - завершение потока
+      // tcp_pthread_detach() - отсоединение потока
+      // tcp_pthread_kill()   - уничтожение потока
    private:
+      static int _read_cnt;
+      static char* _read_ptr;
+      static char _read_buf[mr::MAXLINE];
+
       void error_ex(const char* str)
       {
          char errmsg[mr::MAXLINE];
@@ -63,17 +76,76 @@ namespace pl {
          act.sa_flags = 0;
 
          if (signo==SIGALRM) {
-#ifdef SA_INTERRUPT
+            #ifdef SA_INTERRUPT
             act.sa_flags |= SA_INTERRUPT; // SunOS 4.x
-#endif
+            #endif
          }
          else {
-#ifdef SA_RESTART
+            #ifdef SA_RESTART
             act.sa_flags |= SA_RESTART; // SVR4, 44BSD
-#endif
+            #endif
          }
          if (sigaction(signo,&act,&oact)<0) return SIG_ERR;
          return oact.sa_handler;
+      }
+      //------------------------------------------------------------------------
+      static ssize_t _my_read(int fd, char* ptr)
+      {
+         if (_read_cnt<=0) {
+            again:
+            if ((_read_cnt = read(fd,_read_buf,sizeof(_read_buf)))<0) {
+               if (errno==EINTR) goto again;
+               return -1;
+            }
+            else if (_read_cnt==0) return 0;
+            _read_ptr = _read_buf;
+         }
+         _read_cnt--;
+         *ptr = *_read_ptr++;
+         return 1;
+      }
+      //------------------------------------------------------------------------
+      ssize_t _readline(int fd, void* vptr, size_t maxlen) 
+      {
+         char c {};
+         char* ptr {static_cast<char*>(vptr)};
+         ssize_t n {};
+         ssize_t rc {};
+         for (n = 1; n<maxlen; n++) {
+            if ((rc = _my_read(fd,&c))==1) {
+               *ptr++ = c;
+               if (c=='\n') break;
+            }
+            else if (rc==0) {
+               *ptr = 0;
+               return n-1;
+            }
+            else return -1;
+         }
+         *ptr = 0;
+         return n;
+      }
+      //------------------------------------------------------------------------
+      ssize_t _readlinebuf(void** vptrptr)
+      {
+         if (_read_cnt) *vptrptr = _read_ptr;
+         return _read_cnt;
+      }
+      //------------------------------------------------------------------------
+      ssize_t _writen(int fd, const void* vptr, size_t n)
+      {
+         const char* ptr {static_cast<const char*>(vptr)};
+         size_t nleft {n};
+         ssize_t nwritten {};
+         while (nleft>0) {
+            if ((nwritten = write(fd,ptr,nleft))<=0) {
+               if (nwritten<0 && errno==EINTR) nwritten = 0;
+               else return -1;
+            }
+            nleft-=nwritten;
+            ptr+=nwritten;
+         }
+         return n;
       }
    public:
       int tcp_socket(int domain, int type, int protocol)
@@ -147,11 +219,27 @@ namespace pl {
          return n;
       }
       //------------------------------------------------------------------------
+      ssize_t tcp_readline(int fd, void* ptr, size_t maxlen)
+         // чтение данных из потока
+      {
+         ssize_t n {};
+         if ((n = _readline(fd,ptr,maxlen))<0) 
+            error_ex("E: Readline error - ");
+         return n;
+      }
+      //------------------------------------------------------------------------
       void tcp_write(int fd, const void* ptr, size_t nbytes)
          // запись данных в поток
       {
          if (write(fd,ptr,nbytes)<0) 
             error_ex("E: Write error - ");
+      }
+      //------------------------------------------------------------------------
+      void tcp_writen(int fd, const void* ptr, size_t nbytes)
+         // запись данных в поток
+      {
+         if (_writen(fd,ptr,nbytes)!=nbytes) 
+            error_ex("E: Writen error - ");
       }
       //------------------------------------------------------------------------
       pid_t tcp_fork()
@@ -170,6 +258,45 @@ namespace pl {
          if ((sigfunc = _signal(signo,func))==SIG_ERR)
             error_ex("E: Signal error - ");
          return sigfunc;
+      }
+      //------------------------------------------------------------------------
+      void tcp_pthread_create(pthread_t* tid, 
+                              const pthread_attr_t* attr, 
+                              void* (*func)(void*), 
+                              void* arg)
+         // создание потока
+      {
+         int n {};
+         if ((n = pthread_create(tid,attr,func,arg))==0) return;
+         errno = n;
+         error_ex("E: Pthread_create error - ");
+      }
+      //------------------------------------------------------------------------
+      void tcp_pthread_join(pthread_t tid, void** status)
+         // завершение потока
+      {
+         int n {};
+         if ((n = pthread_join(tid,status))==0) return;
+         errno = n;
+         error_ex("E: Pthread_join error - ");
+      }
+      //------------------------------------------------------------------------
+      void tcp_pthread_detach(pthread_t tid)
+         // отсоединение потока
+      {
+         int n {};
+         if ((n = pthread_detach(tid))==0) return;
+         errno = n;
+         error_ex("E: Pthread_detach error - ");
+      }
+      //------------------------------------------------------------------------
+      void tcp_pthread_kill(pthread_t tid, int signo)
+         // уничтожение потока
+      {
+         int n {};
+         if ((n = pthread_kill(tid,signo))==0) return;
+         errno = n;
+         error_ex("E: Pthread_kill error - ");
       }
    };
 }
