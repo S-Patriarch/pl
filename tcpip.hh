@@ -54,10 +54,10 @@ namespace pl {
       // tcp_pthread_detach() - отсоединение потока
       // tcp_pthread_kill()   - уничтожение потока
    private:
-      static int _read_cnt;
-      static char* _read_ptr;
-      static char _read_buf[mr::MAXLINE];
-
+      int   _read_cnt;
+      char* _read_ptr;
+      char  _read_buf[mr::MAXLINE];
+      //------------------------------------------------------------------------
       void error_ex(const char* str)
       {
          char errmsg[mr::MAXLINE];
@@ -89,7 +89,7 @@ namespace pl {
          return oact.sa_handler;
       }
       //------------------------------------------------------------------------
-      static ssize_t _my_read(int fd, char* ptr)
+      ssize_t _my_read(int fd, char* ptr)
       {
          if (_read_cnt<=0) {
             again:
@@ -107,10 +107,11 @@ namespace pl {
       //------------------------------------------------------------------------
       ssize_t _readline(int fd, void* vptr, size_t maxlen) 
       {
-         char c {};
-         char* ptr {static_cast<char*>(vptr)};
+         char    c {};
+         char*   ptr {static_cast<char*>(vptr)};
          ssize_t n {};
          ssize_t rc {};
+
          for (n = 1; n<maxlen; n++) {
             if ((rc = _my_read(fd,&c))==1) {
                *ptr++ = c;
@@ -135,8 +136,9 @@ namespace pl {
       ssize_t _writen(int fd, const void* vptr, size_t n)
       {
          const char* ptr {static_cast<const char*>(vptr)};
-         size_t nleft {n};
-         ssize_t nwritten {};
+         size_t      nleft {n};
+         ssize_t     nwritten {};
+
          while (nleft>0) {
             if ((nwritten = write(fd,ptr,nleft))<=0) {
                if (nwritten<0 && errno==EINTR) nwritten = 0;
@@ -148,10 +150,11 @@ namespace pl {
          return n;
       }
    public:
+      //------------------------------------------------------------------------
       int tcp_socket(int domain, int type, int protocol)
          // создание сокета
       {
-         int   n {};
+         int n {};
          if ((n = socket(domain,type,protocol))<0) 
             error_ex("E: Socket error - ");
          return n;
@@ -174,7 +177,7 @@ namespace pl {
       int tcp_accept(int fd, struct sockaddr* addr, socklen_t* len)
          // прием данных
       {
-         int   n {};
+         int n {};
          if ((n = accept(fd,addr,len))<0) 
             error_ex("E: Accept error - ");
          return n;
