@@ -287,7 +287,7 @@ namespace pl {
       void tcp_fputs(const char* str, std::FILE* stream)
          // вывод в поток
       {
-         if (fputs(str,stream)==std::feof())
+         if (fputs(str,stream)==EOF)
             error_ex("E: fputs error - ");
       }
       //------------------------------------------------------------------------
