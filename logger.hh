@@ -5,6 +5,10 @@
 #ifndef PL_LOGGER_HH
 #define PL_LOGGER_HH
 
+#ifndef PL_EXCEPT_HH
+#include "except.hh"
+#endif
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -31,7 +35,7 @@ namespace pl {
       {
          m_file.open(s_flog, std::ios::in | std::ios::out | std::ios::app);
          if (!m_file.is_open()) 
-            std::cerr << "\nE: Не удалось открыть файл журнала.\n";
+            throw Exception("E: не удалось открыть файл журнала.");
       }
       ~Logger() noexcept
       {
