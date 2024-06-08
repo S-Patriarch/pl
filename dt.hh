@@ -38,10 +38,10 @@ namespace pl {
          // преобразуем текущее время в локальное время
          std::tm* lt {std::localtime(&now)};
          // форматируем локальное время в строку
-         char buffer[9];
-         std::strftime(buffer,sizeof(buffer),"%H:%M:%S",lt);
-         // преобразуем buffer в std::string
-         std::string res {buffer};
+         char buf[9];
+         std::strftime(buf,sizeof(buf),"%H:%M:%S",lt);
+         // преобразуем buf в std::string
+         std::string res {buf};
          return res;
       }
   };
