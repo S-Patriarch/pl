@@ -16,7 +16,7 @@ namespace pl {
       // stop()  - завершение замера
       // duration_milliseconds() - результат замера в миллисекундах
       // duration_seconds()      - результат замера в секундах
-  private:
+   private:
       std::chrono::time_point<std::chrono::high_resolution_clock> m_start_time;
       std::chrono::time_point<std::chrono::high_resolution_clock> m_end_time;
    public:
