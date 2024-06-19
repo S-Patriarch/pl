@@ -34,10 +34,10 @@ namespace pl {
       Logger(const std::string& s_flog)
       {
          // открытие файла для чтения, вывода, добавления с отключенной буферизацией
-         m_file.open(s_flog, std::ios::in | std::ios::out | std::ios::app | std::ios::unitbuf);
+         m_file.open(s_flog, std::ios::in | std::ios::out | std::ios::app);
          if (!m_file.is_open()) 
             throw Exception("E: failed to open log file.");
-      }
+     }
       ~Logger() noexcept
       {
          if (m_file.is_open()) m_file.close();
@@ -52,7 +52,7 @@ namespace pl {
          // области видимости
       {
          std::unique_lock<std::shared_mutex> lck(m_mutex);
-         if (m_file.is_open()) m_file << s << '\n';
+         if (m_file.is_open()) m_file << s << '\n' << std::flush;
       }
       std::string read()
          // чтение строки из журнала логов
