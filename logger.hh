@@ -35,7 +35,16 @@ namespace pl {
       {
          m_file.open(s_flog, std::ios::in | std::ios::out | std::ios::app);
          if (!m_file.is_open()) 
-            throw Exception("E: не удалось открыть файл журнала.");
+            throw Exception("E: failed to open log file.");
+
+         // установка флагов синхронизации для потока ввода-вывода
+         // позволяющих управлять тем, как и когда данные
+         // записываются на диск
+         
+         // флаг для отключения синхронизации потока с потоками ввода-вывода С
+         m_file.sync_with_stdio(false);
+         // флаг для немедленной записи данных в файл
+         m_file.unitbuf();
       }
       ~Logger() noexcept
       {
