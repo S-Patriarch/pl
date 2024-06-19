@@ -9,7 +9,6 @@
 #include "except.hh"
 #endif
 
-#include <ios>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -34,18 +33,10 @@ namespace pl {
    public:
       Logger(const std::string& s_flog)
       {
-         m_file.open(s_flog, std::ios::in | std::ios::out | std::ios::app);
+         // открытие файла для чтения, вывода, добавления с отключенной буферизацией
+         m_file.open(s_flog, std::ios::in | std::ios::out | std::ios::app | std::ios::unitbuf);
          if (!m_file.is_open()) 
             throw Exception("E: failed to open log file.");
-
-         // установка флагов синхронизации для потоков ввода-вывода
-         // позволяющих управлять тем, как и когда данные
-         // записываются на диск
-         
-         // отключение синхронизации с потоками ввода-вывода С
-         m_file.sync_with_stdio(false);
-         // установка флага unitbuf() для немедленной записи данных в файл
-         m_file.rdbuf()->setbuf(nullptr);
       }
       ~Logger() noexcept
       {
