@@ -9,6 +9,7 @@
 #include "except.hh"
 #endif
 
+#include <ios>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -37,14 +38,14 @@ namespace pl {
          if (!m_file.is_open()) 
             throw Exception("E: failed to open log file.");
 
-         // установка флагов синхронизации для потока ввода-вывода
+         // установка флагов синхронизации для потоков ввода-вывода
          // позволяющих управлять тем, как и когда данные
          // записываются на диск
          
-         // флаг для отключения синхронизации потока с потоками ввода-вывода С
+         // отключение синхронизации с потоками ввода-вывода С
          m_file.sync_with_stdio(false);
-         // флаг для немедленной записи данных в файл
-         m_file.unitbuf();
+         // установка флага unitbuf() для немедленной записи данных в файл
+         m_file.rdbuf()->setbuf(nullptr);
       }
       ~Logger() noexcept
       {
