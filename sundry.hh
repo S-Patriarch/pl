@@ -13,9 +13,10 @@ namespace pl {
    // библиотека всяких разных функций
    //
    // функции:
-   // pack_bools()   - упаковка 8 значений bool в 1 байт
-   // unpack_bools() - распаковка 1 байта на 8 значений типа bool
-   // split_string() - разделение строки на слова
+   // pack_bools()     - упаковка 8 значений bool в 1 байт
+   // unpack_bools()   - распаковка 1 байта на 8 значений типа bool
+   // split_string()   - разделение строки на слова
+   // extract_digits() - извлечение цифр из строки
    //---------------------------------------------------------------------------
    std::uint8_t pack_bools(bool b1, bool b2, bool b3, bool b4,
                            bool b5, bool b6, bool b7, bool b8) 
@@ -63,6 +64,19 @@ namespace pl {
       std::vector<std::string> res;
       std::string w {};
       while (ss >> w) {res.emplace_back(w);}
+      return res;
+   }
+   //---------------------------------------------------------------------------
+   std::vector<int> extract_digits(const std::string& s) 
+      // функция извлекает цифры из строки
+   {
+      std::vector<int> res;
+      for (char c : s) {
+         if (std::isdigit(static_cast<unsigned char>(c))) {
+            // преобразуем символ цифры в числовое значение
+            res.emplace_back(c-'0');
+         }
+      }
       return res;
    }
 }
