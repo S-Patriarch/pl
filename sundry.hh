@@ -6,6 +6,8 @@
 #define PL_SUNDRY_HH
 
 #include <cstdint>
+#include <vector>
+#include <sstream>
 
 namespace pl {
    // библиотека всяких разных функций
@@ -13,6 +15,7 @@ namespace pl {
    // функции:
    // pack_bools()   - упаковка 8 значений bool в 1 байт
    // unpack_bools() - распаковка 1 байта на 8 значений типа bool
+   // split_string() - разделение строки на слова
    //---------------------------------------------------------------------------
    std::uint8_t pack_bools(bool b1, bool b2, bool b3, bool b4,
                            bool b5, bool b6, bool b7, bool b8) 
@@ -51,6 +54,16 @@ namespace pl {
       b6 = (p>>2)&1;
       b7 = (p>>1)&1;
       b8 = p&1;
+   }
+   //---------------------------------------------------------------------------
+   std::vector<std::string> split_string(const std::string& s) 
+      // функция разделяет строку на слова
+   {
+      std::stringstream ss(s);
+      std::vector<std::string> res;
+      std::string w {};
+      while (ss >> w) {res.emplace_back(w);}
+      return res;
    }
 }
 #endif // PL_SUNDRY_HH
