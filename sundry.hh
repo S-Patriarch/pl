@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <vector>
 #include <sstream>
+#include <cctype>
 
 namespace pl {
    // библиотека всяких разных функций
