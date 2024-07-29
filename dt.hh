@@ -12,7 +12,7 @@
 #include <ctime>
 
 namespace pl {
-   class Dt {
+   class DateTime {
       // класс для работы с датой и временем
       //
       // компонентные функции:
