@@ -13,7 +13,7 @@
 #include <string>
 
 namespace pl {
-   class Progress_bar {
+   class ProgressBar {
       // индикаторы выполнения и работа с ними
       //
       // компонентные функции:
@@ -31,7 +31,7 @@ namespace pl {
       // использование:
       // {
       //    pl::Conio conio;
-      //    pl::Progress_bar pb;
+      //    pl::ProgressBar pb;
       //    pb.set_min(0);
       //    pb.set_max(100);
       //    pb.set_style("complete", "%", "#", ".");
