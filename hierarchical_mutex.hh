@@ -10,7 +10,7 @@
 #include <stdexcept>
 
 namespace pl {
-   class hierarchical_mutex {
+   class HierarchicalMutex {
       // иерархия блокировок
       // иерархия блокировок позволяет обеспечить средство проверки соблюдения
       // соглашения в ходе выполнения программы
@@ -60,7 +60,7 @@ namespace pl {
          m_this_thread_hierarchy_value = m_hierarchy_value;
       }
    public:
-      explicit hierarchical_mutex(unsigned long value) :
+      explicit HierarchicalMutex(unsigned long value) :
          m_hierarchy_value{value},
          m_previous_hierarchy_value{0}
       {}
@@ -86,6 +86,6 @@ namespace pl {
       }
    };
    thread_local unsigned long
-   hierarchical_mutex::m_this_thread_hierarchy_value{ULONG_MAX};
+   HierarchicalMutex::m_this_thread_hierarchy_value{ULONG_MAX};
 }
 #endif // PL_HIERARCHICAL_MUTEX_HH
