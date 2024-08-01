@@ -90,7 +90,7 @@ namespace pl {
          delete[] m_backgroundColorRegular;
          delete[] m_backgroundColorBold;
       }
-      enum color 
+      enum class color 
       {
          BLACK = 0, RED = 1, GREEN = 2, YELLOW = 3, 
          BLUE = 4, MAGENTA = 5, CYAN = 6, WHITE = 7,
