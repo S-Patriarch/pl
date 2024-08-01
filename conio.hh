@@ -117,7 +117,7 @@ namespace pl {
          return std::string(buf);
       }
 #ifdef _WIN32
-      void set_locale_WIN32_rus() {setlocale(LC_ALL,"rus");}
+      void set_locale_WIN32_rus() {setlocale(LC_ALL,"ru_RU.utf-8");}
       void set_console_WIN32_rus() 
       {
          SetConsoleCP(1251);
