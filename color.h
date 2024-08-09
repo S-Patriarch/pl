@@ -116,13 +116,13 @@ namespace pl {
       CURRENT = 1000
     };
 
-    std::string esc_c()         { return m_colorClear; }
-    std::string esc_tr(color i) { return m_textColorRegular[i]; }
-    std::string esc_tb(color i) { return m_textColorBold[i]; }
-    std::string esc_br(color i) { return m_backgroundColorRegular[i]; }
-    std::string esc_bb(color i) { return m_backgroundColorBold[i]; }
+    std::string esc_c()         const { return m_colorClear; }
+    std::string esc_tr(color i) const { return m_textColorRegular[i]; }
+    std::string esc_tb(color i) const { return m_textColorBold[i]; }
+    std::string esc_br(color i) const { return m_backgroundColorRegular[i]; }
+    std::string esc_bb(color i) const { return m_backgroundColorBold[i]; }
     
-    color get_bkg_color()
+    color get_bkg_color() const
     {
       color backgroundColor;
 #ifdef __linux__
