@@ -64,10 +64,10 @@ namespace pl {
       unsigned short int y {0};
     } text;
   public:
-    void clr_scr() { std::cout << "\033[2J\033[1;1H"; }
-    void clr_eol() { std::cout << "\033[K"; }
-    void crs_h() { std::cout << "\033[?25l"; }
-    void crs_s() { std::cout << "\033[?25h"; }
+    void clr_scr() const { std::cout << "\033[2J\033[1;1H"; }
+    void clr_eol() const { std::cout << "\033[K"; }
+    void crs_h()   const { std::cout << "\033[?25l"; }
+    void crs_s()   const { std::cout << "\033[?25h"; }
 
     void goto_xy(unsigned short int x, unsigned short int y)
     {
@@ -76,8 +76,8 @@ namespace pl {
       text.y = y;
     }
 
-    unsigned short int where_x() { return text.x; }
-    unsigned short int where_y() { return text.y; }
+    unsigned short int where_x() const { return text.x; }
+    unsigned short int where_y() const { return text.y; }
 
 #ifdef __linux__
     int get_ch()
@@ -130,9 +130,9 @@ namespace pl {
     }
 
 #ifdef _WIN32
-    void set_locale_WIN32_rus() { setlocale(LC_ALL, "ru_RU.utf-8"); }
+    void set_locale_WIN32_rus() const { setlocale(LC_ALL, "ru_RU.utf-8"); }
     
-    void set_console_WIN32_rus() 
+    void set_console_WIN32_rus() const
     {
       SetConsoleCP(1251);
       SetConsoleOutputCP(1251);
