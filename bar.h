@@ -67,8 +67,8 @@ namespace pl {
   public:
     void set_min(unsigned short int min_) { _minIteretions = min_; }
     void set_max(unsigned short int max_) { _maxIterations = max_; }
-    unsigned short int get_min() { return _minIteretions; }
-    unsigned short int get_max() { return _maxIterations; }
+    unsigned short int get_min() const { return _minIteretions; }
+    unsigned short int get_max() const { return _maxIterations; }
     void set_message(std::string message) { _message = message; }
     
     void set_brackets(std::string bracket_left, std::string bracket_rigth)
@@ -100,7 +100,7 @@ namespace pl {
 
     void set_bar_width(unsigned short int width) { _barWidth = width; }
       
-    void update(unsigned short int index_)
+    void update(unsigned short int index_) const
       // обновление отрисовки индикатора выполнения
     {
       // вычисление процента выполнения
