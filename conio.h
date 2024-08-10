@@ -130,7 +130,7 @@ namespace pl {
     }
 
 #ifdef _WIN32
-    void set_locale_WIN32_rus() const { std::setlocale(LC_ALL, "ru_RU.UTF-8"); }
+    void set_locale_WIN32_rus() const { std::setlocale(LC_ALL, "ru_RU.UTF8"); }
 
     void set_console_WIN32_rus() const
     {
