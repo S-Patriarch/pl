@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_LOGGER_HH
-#define PL_LOGGER_HH
+#define PL_LOGGER_HH 1
 
 #ifndef PL_EXCEPT_HH
 #include "except.hh"

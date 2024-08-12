@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_COLOR_HH
-#define PL_COLOR_HH
+#define PL_COLOR_HH 1
 
 #include <string>
 #include <ostream>

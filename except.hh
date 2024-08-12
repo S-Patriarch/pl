@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_EXCEPT_HH
-#define PL_EXCEPT_HH
+#define PL_EXCEPT_HH 1
 
 #include <exception>
 

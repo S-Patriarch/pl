@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_CONIO_HH
-#define PL_CONIO_HH
+#define PL_CONIO_HH 1
 
 #include <iostream>
 #include <ostream>

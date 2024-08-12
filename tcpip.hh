@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_TCPIP_HH
-#define PL_TCPIP_HH
+#define PL_TCPIP_HH 1
 
 #ifndef PL_EXCEPT_HH
 #include "except.hh"

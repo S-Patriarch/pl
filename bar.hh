@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_BAR_HH
-#define PL_BAR_HH
+#define PL_BAR_HH 1
 
 #ifndef PL_COLOR_HH
 #include "color.hh"

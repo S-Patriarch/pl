@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_HIERARCHICAL_MUTEX_HH
-#define PL_HIERARCHICAL_MUTEX_HH
+#define PL_HIERARCHICAL_MUTEX_HH 1
 
 #include <limits.h>
 #include <mutex>

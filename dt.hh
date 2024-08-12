@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_DT_HH
-#define PL_DT_HH
+#define PL_DT_HH 1
 
 #include <chrono>
 #include <string>
