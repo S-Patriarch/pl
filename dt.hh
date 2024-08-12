@@ -24,11 +24,12 @@ namespace pl {
      */
   public:
     enum class dcf {
-      DCF_dBY,
+      DCF_dBY = 0,
       DCF_BdY
     }; 
 
-    std::string get_date() const
+    std::string 
+    get_date() const
     {
       std::chrono::system_clock::time_point 
       today {std::chrono::system_clock::now()};
@@ -39,7 +40,8 @@ namespace pl {
       return res;
     }
 
-    std::string get_time() const
+    std::string 
+    get_time() const
     {
       // получаем текущее время
       std::time_t now {std::time(nullptr)};
@@ -53,8 +55,8 @@ namespace pl {
       return res;
     }
 
-    std::string date_conversion(const std::string& dateString, 
-                                dcf dcf =dcf::DCF_dBY) const
+    std::string 
+    date_conversion(const std::string& dateString, dcf dcf =dcf::DCF_dBY) const
     {
       std::tm tm;
       std::istringstream ss(dateString);
