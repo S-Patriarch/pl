@@ -1,6 +1,6 @@
 /*
  * Copyright(C) 2024, S-Patriarch
- * Patriarch library : other.hh
+ * Patriarch library : different.hh
  */
 
 #ifndef PL_DIFFERENT_HH
