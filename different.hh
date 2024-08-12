@@ -3,8 +3,8 @@
  * Patriarch library : other.hh
  */
 
-#ifndef PL_OTHER_HH
-#define PL_OTHER_HH
+#ifndef PL_DIFFERENT_HH
+#define PL_DIFFERENT_HH
 
 #include <cstdint>
 #include <vector>
