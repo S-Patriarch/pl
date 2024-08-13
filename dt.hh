@@ -28,8 +28,7 @@ namespace pl {
       DCF_BdY
     }; 
 
-    std::string 
-    get_date() const
+    std::string get_date() const
     {
       std::chrono::system_clock::time_point 
       today {std::chrono::system_clock::now()};
@@ -40,8 +39,7 @@ namespace pl {
       return res;
     }
 
-    std::string 
-    get_time() const
+    std::string get_time() const
     {
       // получаем текущее время
       std::time_t now {std::time(nullptr)};
@@ -55,17 +53,17 @@ namespace pl {
       return res;
     }
 
-    std::string 
-    date_conversion(const std::string& dateString, dcf dcf =dcf::DCF_dBY) const
+    std::string date_conversion(const std::string& dateString, 
+                                dcf dcf =dcf::DCF_dBY) const
     {
       std::tm tm;
       std::istringstream ss(dateString);
       ss >> std::get_time(&tm, "%d-%m-%Y");
 
       char bufFormattedDate[80] {""};
-      if (dcf == dcf::DCF_dBY) 
+      if (dcf==dcf::DCF_dBY) 
         std::strftime(bufFormattedDate, sizeof(bufFormattedDate), "%d %B %Y", &tm);
-      else if (dcf == dcf::DCF_BdY) 
+      else if (dcf==dcf::DCF_BdY) 
         std::strftime(bufFormattedDate, sizeof(bufFormattedDate), "%B %d, %Y", &tm);
 
       return static_cast<std::string>(bufFormattedDate);
