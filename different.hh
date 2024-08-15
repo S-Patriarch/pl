@@ -4,7 +4,7 @@
  */
 
 #ifndef PL_DIFFERENT_HH
-#define PL_DIFFERENT_HH
+#define PL_DIFFERENT_HH 1
 
 #include <cstdint>
 #include <vector>
