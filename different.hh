@@ -19,7 +19,7 @@ namespace pl {
    * pack_bools()     - упаковка 8 значений bool в 1 байт
    * unpack_bools()   - распаковка 1 байта на 8 значений типа bool
    * split_string()   - разделение строки на слова
-   * extract_digits() - извлечение цифр из строки
+   * extract_digits() - последовательное извлечение цифр из строки
    */
    
   std::uint8_t pack_bools(bool b1, bool b2, bool b3, bool b4,
@@ -71,16 +71,17 @@ namespace pl {
     return res;
   }
 
-  std::vector<int> extract_digits(const std::string& s) 
-    // функция извлекает цифры из строки
+  std::vector<unsigned short int> extract_digits(const std::string& s) 
+    // функция последовательно извлекает цифры из строки
   {
-    std::vector<int> res;
+    std::vector<unsigned short int> res {};
     for (char c : s) {
       if (std::isdigit(static_cast<unsigned char>(c))) {
         // преобразуем символ цифры в числовое значение
-        res.emplace_back(c - '0');
+        res.emplace_back(c-'0');
       }
     }
+    res.shrink_to_fit();
     return res;
   }
 }
