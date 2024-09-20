@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2024, S-Patriarch
  * Patriarch library : conio.hh
  */
@@ -59,7 +59,7 @@ namespace pl {
      * set_console_WIN32_rus() - локализация консоли OS Windows для ввода/вывода
      */
   private:
-    struct Text_info {
+    struct TextInfo {
       unsigned short int x {0};
       unsigned short int y {0};
     } text;
