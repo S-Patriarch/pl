@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2024, S-Patriarch
+ * Copyright (C) 2024, S-Patriarch
  * Patriarch library : except.hh
  */
 
