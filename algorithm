@@ -18,9 +18,10 @@ namespace pl {
    * unpack_bools() - распаковка 1 байта на 8 значений типа bool
    */
   public:
-    std::uint8_t pack_bools(
+    auto pack_bools(
       bool b1, bool b2, bool b3, bool b4,
       bool b5, bool b6, bool b7, bool b8)
+      -> std::uint8_t
       /*
        * функция упаковывает 8 значений типа bool в
        * переменную размером 1 байт
@@ -45,10 +46,11 @@ namespace pl {
       return p;
     }
 
-    void unpack_bools(
+    auto unpack_bools(
       std::uint8_t p, bool &b1, bool &b2,
       bool &b3, bool &b4, bool &b5,
       bool &b6, bool &b7, bool &b8)
+      -> void
       // функция распаковывает 1 байт на 8 значений типа bool
     {
       b1 = (p >> 7) & 1;

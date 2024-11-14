@@ -21,22 +21,22 @@ namespace pl {
    * extract_digits_from_string() - последовательное извлечение цифр из строки
    */
   public:
-    std::vector<std::string>
-    split_string(const std::string &s)
+    auto split_string(const std::string &s)
+      -> std::vector<std::string>
       // функция разделяет строку на слова
     {
       std::stringstream ss(s);
       std::vector<std::string> res;
-      std::string w {};
+      std::string w{};
       while (ss >> w) { res.emplace_back(w); }
       return res;
     }
 
-    std::vector<unsigned short int>
-    extract_digits_from_string(const std::string &s)
+    auto extract_digits_from_string(const std::string &s)
+      -> std::vector<unsigned short int>
       // функция последовательно извлекает цифры из строки
     {
-      std::vector<unsigned short int> res {};
+      std::vector<unsigned short int> res{};
       for (char c : s) {
         if (std::isdigit(static_cast<unsigned char>(c))) {
           // преобразуем символ цифры в числовое значение
