@@ -10,6 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <cctype>
+#include <algorithm>
 
 namespace pl {
   class String {
@@ -17,21 +18,11 @@ namespace pl {
    * класс для работы со строками
    *
    * компонентные функции:
-   * split_string()               - разделение строки на слова
    * extract_digits_from_string() - последовательное извлечение цифр из строки
+   * strspl()                     - разделение строки на слова
+   * strrev()                     - переворот строки
    */
   public:
-    auto split_string(const std::string &s)
-      -> std::vector<std::string>
-      // функция разделяет строку на слова
-    {
-      std::stringstream ss(s);
-      std::vector<std::string> res;
-      std::string w{};
-      while (ss >> w) { res.emplace_back(w); }
-      return res;
-    }
-
     auto extract_digits_from_string(const std::string &s)
       -> std::vector<unsigned short int>
       // функция последовательно извлекает цифры из строки
@@ -45,6 +36,26 @@ namespace pl {
       }
       res.shrink_to_fit();
       return res;
+    }
+
+    auto strspl(const std::string &s)
+      -> std::vector<std::string>
+      // функция разделяет строку на слова
+    {
+      std::stringstream ss(s);
+      std::vector<std::string> res;
+      std::string w{};
+      while (ss >> w) { res.emplace_back(w); }
+      return res;
+    }
+
+    auto strrev(std::string &s)
+      -> void
+      // функция переворачивает строку
+      // при этом строка s меняется прямо внутри
+      // функции без возврата нового значения
+    {
+      std::reverse(s.begin(),s.end());
     }
   };
 }
