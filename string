@@ -18,26 +18,12 @@ namespace pl {
    * класс для работы со строками
    *
    * компонентные функции:
-   * extract_digits_from_string() - последовательное извлечение цифр из строки
-   * strspl()                     - разделение строки на слова
-   * strrev()                     - переворот строки
+   * strspl()         - разделение строки на слова
+   * strrev()         - переворот строки
+   * extract_digits() - последовательное извлечение цифр из строки
+   * char_count()     - подсчет количества вхождений символа в строку
    */
   public:
-    auto extract_digits_from_string(const std::string &s)
-      -> std::vector<unsigned short int>
-      // функция последовательно извлекает цифры из строки
-    {
-      std::vector<unsigned short int> res{};
-      for (char c : s) {
-        if (std::isdigit(static_cast<unsigned char>(c))) {
-          // преобразуем символ цифры в числовое значение
-          res.emplace_back(c-'0');
-        }
-      }
-      res.shrink_to_fit();
-      return res;
-    }
-
     auto strspl(const std::string &s)
       -> std::vector<std::string>
       // функция разделяет строку на слова
@@ -56,6 +42,35 @@ namespace pl {
       // функции без возврата нового значения
     {
       std::reverse(s.begin(),s.end());
+    }
+
+    auto extract_digits(const std::string &s)
+      -> std::vector<unsigned short int>
+      // функция последовательно извлекает цифры из строки
+    {
+      std::vector<unsigned short int> res{};
+      for (char c : s) {
+        if (std::isdigit(static_cast<unsigned char>(c))) {
+          // преобразуем символ цифры в числовое значение
+          res.emplace_back(c-'0');
+        }
+      }
+      res.shrink_to_fit();
+      return res;
+    }
+
+    auto char_count(const std::string &s, char c)
+      -> int
+      // функция подсчитывает количество вхождений
+      // символа в строку
+    {
+      int count{0};
+      for (char ch : s) {
+        if (ch==c) {
+          ++count;
+        }
+      }
+      return count;
     }
   };
 }
