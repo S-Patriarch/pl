@@ -29,9 +29,8 @@ namespace pl {
     };
   }
 
-  class Algorithm {
   /*
-   * класс для работы с алгоритмами
+   * Класс для работы с алгоритмами.
    *
    * компонентные функции:
    * pack_bools()   - упаковка 8 значений bool в 1 байт
@@ -43,164 +42,188 @@ namespace pl {
    * bintooct()     - преобразование 2-ного числа в 8-ное
    * octtobin()     - преобразование 8-ного числа в 2-ное
    */
+  class Algorithm {
   public:
     auto pack_bools(
       bool b1, bool b2, bool b3, bool b4,
       bool b5, bool b6, bool b7, bool b8)
-      -> std::uint8_t
-      /*
-       * функция упаковывает 8 значений типа bool в
-       * переменную размером 1 байт
-       * это значительно может сэкономить потребление памяти, поскольку
-       * в логическом типе данных bool есть лишь два возможных значения
-       * (true и false), которые могут быть представлены одним битом,
-       * но по факту занимают целый байт памяти
-       * а это, в свою очередь, из-за того, что переменные используют
-       * уникальные адреса памяти, а они выделяются только в байтах
-       * переменная bool занимает 1 бит, а другие 7 бит - тратятся впустую
-       */
-    {
-      std::uint8_t p{0};
-      p |= b1 << 7;
-      p |= b2 << 6;
-      p |= b3 << 5;
-      p |= b4 << 4;
-      p |= b5 << 3;
-      p |= b6 << 2;
-      p |= b7 << 1;
-      p |= b8;
-      return p;
-    }
+      -> std::uint8_t;
 
     auto unpack_bools(
       std::uint8_t p, bool &b1, bool &b2,
       bool &b3, bool &b4, bool &b5,
       bool &b6, bool &b7, bool &b8)
-      -> void
-      // функция распаковывает 1 байт на 8 значений типа bool
-    {
-      b1 = (p >> 7) & 1;
-      b2 = (p >> 6) & 1;
-      b3 = (p >> 5) & 1;
-      b4 = (p >> 4) & 1;
-      b5 = (p >> 3) & 1;
-      b6 = (p >> 2) & 1;
-      b7 = (p >> 1) & 1;
-      b8 = p & 1;
-    }
+      -> void;
 
-    auto bintodec(long long binNumber)
-      -> int
-      // функция преобразует 2-ное число в 10-ное
-    {
-      int decNumber{0};
-      int remainder{};
-      int i{0};
-
-      while (binNumber!=0) {
-        remainder =binNumber%10;
-        binNumber /= 10;
-        decNumber += remainder*std::pow(2,i);
-        ++i;
-      }
-      return decNumber;
-    }
-
-    auto dectobin(int decNumber)
-      -> long long
-      // функция преобразует 10-ное число в 2-ное
-    {
-      long long binNumber{0};
-      int remainder{};
-      int i{1};
-
-      while (decNumber!=0) {
-        remainder =decNumber%2;
-        decNumber /= 2;
-        binNumber += remainder*i;
-        i *= 10;
-      }
-      return binNumber;
-    }
-
-    auto octtodec(int octNumber)
-      -> int
-      // функция преобразует 8-ное число в 10-ное
-    {
-      int decNumber{0};
-      int remainder{};
-      int i{0};
-
-      while (octNumber!=0) {
-        remainder =octNumber%10;
-        octNumber /= 10;
-        decNumber += remainder*std::pow(8,i);
-        ++i;
-      }
-      return decNumber;
-    }
-
-    auto dectooct(int decNumber)
-      -> int
-      // функция преобразует 10-ное число в 8-ное
-    {
-      int octNumber{0};
-      int remainder{};
-      int i{1};
-
-      while (decNumber!=0) {
-        remainder =decNumber%8;
-        decNumber /= 8;
-        octNumber += remainder*i;
-        i *= 10;
-      }
-      return octNumber;
-    }
-
-    auto bintooct(long long binNumber)
-      -> int
-      // функция преобразует 2-ное число в 8-ное
-    {
-      int octNumber{0};
-      int decNumber{0};
-      int i{0};
-
-      while (binNumber!=0) {
-        decNumber += (binNumber%10)*std::pow(2,i);
-        ++i;
-        binNumber /= 10;
-      }
-      i =1;
-      while (decNumber!=0) {
-        octNumber += (decNumber%8)*i;
-        decNumber /= 8;
-        i *= 10;
-      }
-      return octNumber;
-    }
-
-    auto octtobin(int octNumber)
-      -> long long
-      // функция преобразует 8-ное число в 2-ное
-    {
-      long long binNumber{0};
-      int decNumber{0};
-      int i{0};
-
-      while (octNumber!=0) {
-        decNumber += (octNumber%10)*std::pow(8,i);
-        ++i;
-        octNumber /= 10;
-      }
-      i =1;
-      while (decNumber!=0) {
-        binNumber += (decNumber%2)*i;
-        decNumber /= 2;
-        i *= 10;
-      }
-      return binNumber;
-    }
+    auto bintodec(long long binNumber) -> int;
+    auto dectobin(int decNumber) -> long long;
+    auto octtodec(int octNumber) -> int;
+    auto dectooct(int decNumber) -> int;
+    auto bintooct(long long binNumber) -> int;
+    auto octtobin(int octNumber) -> long long;
   };
+
+  /*
+   * Реализация компонентных функций.
+   * class Algorithm
+   */
+
+  auto Algorithm::pack_bools(
+    bool b1, bool b2, bool b3, bool b4,
+    bool b5, bool b6, bool b7, bool b8)
+    -> std::uint8_t
+    /*
+     * функция упаковывает 8 значений типа bool в
+     * переменную размером 1 байт
+     * это значительно может сэкономить потребление памяти, поскольку
+     * в логическом типе данных bool есть лишь два возможных значения
+     * (true и false), которые могут быть представлены одним битом,
+     * но по факту занимают целый байт памяти
+     * а это, в свою очередь, из-за того, что переменные используют
+     * уникальные адреса памяти, а они выделяются только в байтах
+     * переменная bool занимает 1 бит, а другие 7 бит - тратятся впустую
+     */
+  {
+    std::uint8_t p{0};
+    p |= b1 << 7;
+    p |= b2 << 6;
+    p |= b3 << 5;
+    p |= b4 << 4;
+    p |= b5 << 3;
+    p |= b6 << 2;
+    p |= b7 << 1;
+    p |= b8;
+    return p;
+  }
+
+  auto Algorithm::unpack_bools(
+    std::uint8_t p, bool &b1, bool &b2,
+    bool &b3, bool &b4, bool &b5,
+    bool &b6, bool &b7, bool &b8)
+    -> void
+    // функция распаковывает 1 байт на 8 значений типа bool
+  {
+    b1 = (p >> 7) & 1;
+    b2 = (p >> 6) & 1;
+    b3 = (p >> 5) & 1;
+    b4 = (p >> 4) & 1;
+    b5 = (p >> 3) & 1;
+    b6 = (p >> 2) & 1;
+    b7 = (p >> 1) & 1;
+    b8 = p & 1;
+  }
+
+  auto Algorithm::bintodec(long long binNumber)
+    -> int
+    // функция преобразует 2-ное число в 10-ное
+  {
+    int decNumber{0};
+    int remainder{};
+    int i{0};
+
+    while (binNumber!=0) {
+      remainder =binNumber%10;
+      binNumber /= 10;
+      decNumber += remainder*std::pow(2,i);
+      ++i;
+    }
+    return decNumber;
+  }
+
+  auto Algorithm::dectobin(int decNumber)
+    -> long long
+    // функция преобразует 10-ное число в 2-ное
+  {
+    long long binNumber{0};
+    int remainder{};
+    int i{1};
+
+    while (decNumber!=0) {
+      remainder =decNumber%2;
+      decNumber /= 2;
+      binNumber += remainder*i;
+      i *= 10;
+    }
+    return binNumber;
+  }
+
+  auto Algorithm::octtodec(int octNumber)
+    -> int
+    // функция преобразует 8-ное число в 10-ное
+  {
+    int decNumber{0};
+    int remainder{};
+    int i{0};
+
+    while (octNumber!=0) {
+      remainder =octNumber%10;
+      octNumber /= 10;
+      decNumber += remainder*std::pow(8,i);
+      ++i;
+    }
+    return decNumber;
+  }
+
+  auto Algorithm::dectooct(int decNumber)
+    -> int
+    // функция преобразует 10-ное число в 8-ное
+  {
+    int octNumber{0};
+    int remainder{};
+    int i{1};
+
+    while (decNumber!=0) {
+      remainder =decNumber%8;
+      decNumber /= 8;
+      octNumber += remainder*i;
+      i *= 10;
+    }
+    return octNumber;
+  }
+
+  auto Algorithm::bintooct(long long binNumber)
+    -> int
+    // функция преобразует 2-ное число в 8-ное
+  {
+    int octNumber{0};
+    int decNumber{0};
+    int i{0};
+
+    while (binNumber!=0) {
+      decNumber += (binNumber%10)*std::pow(2,i);
+      ++i;
+      binNumber /= 10;
+    }
+    i =1;
+    while (decNumber!=0) {
+      octNumber += (decNumber%8)*i;
+      decNumber /= 8;
+      i *= 10;
+    }
+    return octNumber;
+  }
+
+  auto Algorithm::octtobin(int octNumber)
+    -> long long
+    // функция преобразует 8-ное число в 2-ное
+  {
+    long long binNumber{0};
+    int decNumber{0};
+    int i{0};
+
+    while (octNumber!=0) {
+      decNumber += (octNumber%10)*std::pow(8,i);
+      ++i;
+      octNumber /= 10;
+    }
+    i =1;
+    while (decNumber!=0) {
+      binNumber += (decNumber%2)*i;
+      decNumber /= 2;
+      i *= 10;
+    }
+    return binNumber;
+  }
 }
 
 #endif
