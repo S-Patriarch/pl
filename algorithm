@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <algorithm>
 
 namespace pl {
   namespace mr {
@@ -27,6 +28,31 @@ namespace pl {
     struct factorial<0> {
       static const int value{1};
     };
+
+    /*
+     * Функция производит вставку, сохраняя сортировку экземпляра
+     * std::vector.
+     *
+     * Для каждой новой строки, определяет позицию в отсортированном
+     * векторе (куда нужно произвести вставку), позволяя сохранить порядок
+     * строк в векторе. При этом вектор должен быть отсортирован заранее.
+     *
+     * Данный шаблон функции будет работать и с другими типами
+     * содержимого контейнеров, и даже для других контейнеров, таких как
+     * std::set, std::deque и т.д.
+     * При попытке изменить тип контейнера с std::vector на что-то еще нужно
+     * учитывать следующий факт: не все контейнеры поддерживают функцию
+     * std::sort. Этот алгоритм предполагает использование контейнеров с
+     * произвольным доступом. Таковым, например, не является контейнер
+     * std::list.
+     */
+    template<typename C, typename T>
+    auto insert_sorted(C &v, const T &item)
+      -> void
+    {
+      const auto insert_pos (std::lower_bound(std::begin(v),std::end(v),item));
+      v.insert(insert_pos,item);
+    }
   }
 
   /*
@@ -84,7 +110,7 @@ namespace pl {
      * переменная bool занимает 1 бит, а другие 7 бит - тратятся впустую
      */
   {
-    std::uint8_t p{0};
+    std::uint8_t p {0};
     p |= b1 << 7;
     p |= b2 << 6;
     p |= b3 << 5;
@@ -117,9 +143,9 @@ namespace pl {
     -> int
     // функция преобразует 2-ное число в 10-ное
   {
-    int decNumber{0};
-    int remainder{};
-    int i{0};
+    int decNumber {0};
+    int remainder {};
+    int i {0};
 
     while (binNumber!=0) {
       remainder =binNumber%10;
@@ -134,9 +160,9 @@ namespace pl {
     -> long long
     // функция преобразует 10-ное число в 2-ное
   {
-    long long binNumber{0};
-    int remainder{};
-    int i{1};
+    long long binNumber {0};
+    int remainder {};
+    int i {1};
 
     while (decNumber!=0) {
       remainder =decNumber%2;
@@ -151,9 +177,9 @@ namespace pl {
     -> int
     // функция преобразует 8-ное число в 10-ное
   {
-    int decNumber{0};
-    int remainder{};
-    int i{0};
+    int decNumber {0};
+    int remainder {};
+    int i {0};
 
     while (octNumber!=0) {
       remainder =octNumber%10;
@@ -168,9 +194,9 @@ namespace pl {
     -> int
     // функция преобразует 10-ное число в 8-ное
   {
-    int octNumber{0};
-    int remainder{};
-    int i{1};
+    int octNumber {0};
+    int remainder {};
+    int i {1};
 
     while (decNumber!=0) {
       remainder =decNumber%8;
@@ -185,9 +211,9 @@ namespace pl {
     -> int
     // функция преобразует 2-ное число в 8-ное
   {
-    int octNumber{0};
-    int decNumber{0};
-    int i{0};
+    int octNumber {0};
+    int decNumber {0};
+    int i {0};
 
     while (binNumber!=0) {
       decNumber += (binNumber%10)*std::pow(2,i);
@@ -207,9 +233,9 @@ namespace pl {
     -> long long
     // функция преобразует 8-ное число в 2-ное
   {
-    long long binNumber{0};
-    int decNumber{0};
-    int i{0};
+    long long binNumber {0};
+    int decNumber {0};
+    int i {0};
 
     while (octNumber!=0) {
       decNumber += (octNumber%10)*std::pow(8,i);
