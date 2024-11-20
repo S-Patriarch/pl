@@ -14,19 +14,19 @@ namespace pl {
   namespace mr {
     /*
      * factorial<int> - вычисление факториала числа
-     * использование:
+     * usage:
      * {
-     *   int res =pl::mr::factorial<5>::value;
+     *   int res = pl::mr::factorial<5>::value;
      * }
      */
     template<int N>
     struct factorial {
       static const int value
-        =N*factorial<N-1>::value;
+        = N*factorial<N-1>::value;
     };
     template<>
     struct factorial<0> {
-      static const int value{1};
+      static const int value {1};
     };
 
     /*
@@ -45,6 +45,15 @@ namespace pl {
      * std::sort. Этот алгоритм предполагает использование контейнеров с
      * произвольным доступом. Таковым, например, не является контейнер
      * std::list.
+     *
+     * usage:
+     * {
+     *   using std::vector;
+     *   using std::string;
+     *
+     *   vector<string> v {"aaa", "ooo", "yyy"};
+     *   pl::mr::insert_sorted<vector<string>,string>(v,"zzz");
+     * }
      */
     template<typename C, typename T>
     auto insert_sorted(C &v, const T &item)
@@ -148,7 +157,7 @@ namespace pl {
     int i {0};
 
     while (binNumber!=0) {
-      remainder =binNumber%10;
+      remainder = binNumber%10;
       binNumber /= 10;
       decNumber += remainder*std::pow(2,i);
       ++i;
@@ -165,7 +174,7 @@ namespace pl {
     int i {1};
 
     while (decNumber!=0) {
-      remainder =decNumber%2;
+      remainder = decNumber%2;
       decNumber /= 2;
       binNumber += remainder*i;
       i *= 10;
@@ -182,7 +191,7 @@ namespace pl {
     int i {0};
 
     while (octNumber!=0) {
-      remainder =octNumber%10;
+      remainder = octNumber%10;
       octNumber /= 10;
       decNumber += remainder*std::pow(8,i);
       ++i;
@@ -199,7 +208,7 @@ namespace pl {
     int i {1};
 
     while (decNumber!=0) {
-      remainder =decNumber%8;
+      remainder = decNumber%8;
       decNumber /= 8;
       octNumber += remainder*i;
       i *= 10;
