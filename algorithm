@@ -80,22 +80,20 @@ namespace pl {
   class Algorithm {
   public:
     auto pack_bools(
-      bool b1, bool b2, bool b3, bool b4,
-      bool b5, bool b6, bool b7, bool b8)
+      bool, bool, bool, bool, bool, bool, bool, bool)
       -> std::uint8_t;
 
     auto unpack_bools(
-      std::uint8_t p, bool &b1, bool &b2,
-      bool &b3, bool &b4, bool &b5,
-      bool &b6, bool &b7, bool &b8)
+      std::uint8_t, bool&, bool&, bool&,
+      bool&, bool&, bool&, bool&, bool&)
       -> void;
 
-    auto bintodec(long long binNumber) -> int;
-    auto dectobin(int decNumber) -> long long;
-    auto octtodec(int octNumber) -> int;
-    auto dectooct(int decNumber) -> int;
-    auto bintooct(long long binNumber) -> int;
-    auto octtobin(int octNumber) -> long long;
+    auto bintodec(long long) -> int;
+    auto dectobin(int) -> long long;
+    auto octtodec(int) -> int;
+    auto dectooct(int) -> int;
+    auto bintooct(long long) -> int;
+    auto octtobin(int) -> long long;
   };
 
   /*
