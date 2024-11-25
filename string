@@ -24,17 +24,10 @@ namespace pl {
    */
   class String {
   public:
-    auto strspl(const std::string &)
-      -> std::vector<std::string>;
-
-    auto strrev(std::string &)
-      -> void;
-
-    auto extract_digits(const std::string &)
-      -> std::vector<unsigned short int>;
-
-    auto char_count(const std::string &, char)
-      -> int;
+    auto strspl(const std::string &) -> std::vector<std::string>;
+    auto strrev(std::string &) -> void;
+    auto extract_digits(const std::string &) -> std::vector<unsigned short int>;
+    auto char_count(const std::string &, char) -> int;
   };
 
   /*
