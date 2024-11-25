@@ -84,8 +84,8 @@ namespace pl {
       -> std::uint8_t;
 
     auto unpack_bools(
-      std::uint8_t, bool&, bool&, bool&,
-      bool&, bool&, bool&, bool&, bool&)
+      std::uint8_t,
+      bool &, bool &, bool &, bool &, bool &, bool &, bool &, bool &)
       -> void;
 
     auto bintodec(long long) -> int;
@@ -130,9 +130,9 @@ namespace pl {
   }
 
   auto Algorithm::unpack_bools(
-    std::uint8_t p, bool &b1, bool &b2,
-    bool &b3, bool &b4, bool &b5,
-    bool &b6, bool &b7, bool &b8)
+    std::uint8_t p,
+    bool &b1, bool &b2, bool &b3, bool &b4,
+    bool &b5, bool &b6, bool &b7, bool &b8)
     -> void
     // функция распаковывает 1 байт на 8 значений типа bool
   {

@@ -9,37 +9,60 @@
 #include <chrono>
 
 namespace pl {
+  /*
+   * Класс для замера времени работы кода.
+   *
+   * компонентные функции:
+   * start()                 - начало замера
+   * stop()                  - завершение замера
+   * duration_milliseconds() - результат замера в миллисекундах
+   * duration_seconds()      - результат замера в секундах
+   */
   class Timer {
-    /*
-     * класс для замера времени работы кода
-     *
-     * компонентные функции:
-     * start() - начало замера
-     * stop()  - завершение замера
-     * duration_milliseconds() - результат замера в миллисекундах
-     * duration_seconds()      - результат замера в секундах
-     */
-  private:
-    std::chrono::time_point<std::chrono::high_resolution_clock>  m_start_time;
-    std::chrono::time_point<std::chrono::high_resolution_clock>  m_end_time;
+    std::chrono::time_point<std::chrono::high_resolution_clock> _startTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> _endTime;
+
   public:
-    Timer() : m_start_time{std::chrono::high_resolution_clock::now()} {}
-    
-    void start() { m_start_time = std::chrono::high_resolution_clock::now(); }
-    void stop() { m_end_time = std::chrono::high_resolution_clock::now(); }
+    Timer()
+      : _startTime{std::chrono::high_resolution_clock::now()}
+    {}
 
-    float duration_milliseconds() const
-    {
-      std::chrono::duration<float, std::milli> duration = m_end_time - m_start_time;
-      return duration.count();
-    }
-
-    float duration_seconds() const
-    {
-      std::chrono::duration<float> duration = m_end_time - m_start_time;
-      return duration.count();
-    }
+    auto start() -> void;
+    auto stop() -> void;
+    auto duration_milliseconds() -> float const;
+    auto duration_seconds() -> float const;
   };
+
+  /*
+   * Реализация компонентных функций.
+   * class Timer
+   */
+
+  auto Timer::start()
+    -> void
+  {
+    _startTime = std::chrono::high_resolution_clock::now();
+  }
+
+  auto Timer::stop()
+    -> void
+  {
+    _endTime = std::chrono::high_resolution_clock::now();
+  }
+
+  auto Timer::duration_milliseconds()
+    -> float const
+  {
+    std::chrono::duration<float, std::milli> duration = _endTime-_startTime;
+    return duration.count();
+  }
+
+  auto Timer::duration_seconds()
+    -> float const
+  {
+    std::chrono::duration<float> duration = _endTime-_startTime;
+    return duration.count();
+  }
 }
 
 #endif
