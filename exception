@@ -9,34 +9,36 @@
 #include <exception>
 
 namespace pl {
+  /*
+   * Работа с исключениями.
+   * Класс наследуется от библиотечного класса - std::exception.
+   *
+   * usage:
+   *   В коде программы бросается исключение следующим образом:
+   *     throw pl::Exception("E: Message to exception.");
+   *
+   *   Ловится данное исключение следующим образом:
+   *     try {
+   *       throw pl::Exception("E: Message to exception.");
+   *     }
+   *     catch (std::exception &ex) {
+   *       std::cout
+   *         << "\nПоймано исключение: "
+   *         << ex.what()
+   *         << std::endl;
+   *     }
+   */
   class Exception final : public std::exception {
-    /*
-     * работа с исключениями
-     * класс наследуется от библиотечного класса - std::exception
-     *
-     * использование:
-     * в коде программы бросается исключение следующим образом
-     *   throw pl::Exception("E: Message to exception.");
-     * ловится данное исключение следующим образом
-     *   try {
-     *     throw pl::Exception("E: Message to exception.");
-     *   }
-     *   catch (std::exception& ex) {
-     *     std::cout << "\nПоймано исключение: " 
-     *               << ex.what() 
-     *               << std::endl;
-     *   }
-     */
-  private:
-    const char* m_message {};
+    const char *_message;
+
   public:
-    Exception(const char* mess) : std::exception(), m_message{mess} {}
+    Exception(const char *mess) : std::exception(), _message{mess} {}
     ~Exception() noexcept {}
 
-    virtual const char* what() const noexcept override 
+    virtual const char *what() const noexcept override
       // перегрузка метода what() стандартного класса std::exception
     { 
-      return m_message; 
+      return _message;
     }
   };
 }
