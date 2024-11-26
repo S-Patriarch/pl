@@ -17,6 +17,8 @@ namespace pl {
    * stop()                  - завершение замера
    * duration_milliseconds() - результат замера в миллисекундах
    * duration_seconds()      - результат замера в секундах
+   * duration_minutes()      - результат замера в минутах
+   * duration_hours()        - результат замера в часах
    */
   class Timer {
     std::chrono::time_point<std::chrono::high_resolution_clock> _startTime;
@@ -29,8 +31,11 @@ namespace pl {
 
     auto start() -> void;
     auto stop() -> void;
+
     auto duration_milliseconds() -> float const;
     auto duration_seconds() -> float const;
+    auto duration_minutes() -> float const;
+    auto duration_hours() -> float const;
   };
 
   /*
@@ -53,14 +58,32 @@ namespace pl {
   auto Timer::duration_milliseconds()
     -> float const
   {
-    std::chrono::duration<float, std::milli> duration = _endTime-_startTime;
+    std::chrono::duration<float,std::milli> duration
+      = _endTime - _startTime;
     return duration.count();
   }
 
   auto Timer::duration_seconds()
     -> float const
   {
-    std::chrono::duration<float> duration = _endTime-_startTime;
+    std::chrono::duration<float> duration
+      = _endTime - _startTime;
+    return duration.count();
+  }
+
+  auto Timer::duration_minutes()
+    -> float const
+  {
+    std::chrono::duration<float,std::ratio<60>> duration
+      = _endTime - _startTime;
+    return duration.count();
+  }
+
+  auto Timer::duration_hours()
+    -> float const
+  {
+    std::chrono::duration<float,std::ratio<3600>> duration
+      = _endTime - _startTime;
     return duration.count();
   }
 }
