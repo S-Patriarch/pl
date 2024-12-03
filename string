@@ -20,14 +20,16 @@ namespace pl {
    * strspl()         - разделение строки на слова
    * strrev()         - переворот строки
    * extract_digits() - последовательное извлечение цифр из строки
-   * char_count()     - подсчет количества вхождений символа в строку
+   * count_char()     - подсчет количества вхождений символа в строку
+   * count_words()    - подсчет количества слов в строке
    */
   class String {
   public:
     auto strspl(const std::string &) -> std::vector<std::string>;
     auto strrev(std::string &) -> void;
     auto extract_digits(const std::string &) -> std::vector<unsigned short int>;
-    auto char_count(const std::string &, char) -> int;
+    auto count_char(const std::string &, char) -> int;
+    auto count_words(const std::string &) -> int;
   };
 
   /*
@@ -70,7 +72,7 @@ namespace pl {
     return res;
   }
 
-  auto String::char_count(const std::string &s, char c)
+  auto String::count_char(const std::string &s, char c)
     -> int
     // функция подсчитывает количество вхождений
     // символа в строку
@@ -79,6 +81,17 @@ namespace pl {
     for (char ch : s) {
       if (ch==c) {++count;}
     }
+    return count;
+  }
+
+  auto String::count_words(const std::string &s)
+    -> int
+    // функция подсчитывает количество слов в строке
+  {
+    std::istringstream ss(s);
+    std::string w {};
+    int count {0};
+    while (ss >> w) {++count;}
     return count;
   }
 }
