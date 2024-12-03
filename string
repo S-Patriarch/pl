@@ -88,7 +88,7 @@ namespace pl {
     -> int
     // функция подсчитывает количество слов в строке
   {
-    std::istringstream ss(s);
+    std::stringstream ss(s);
     std::string w {};
     int count {0};
     while (ss >> w) {++count;}
