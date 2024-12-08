@@ -1,0 +1,91 @@
+/*
+ * Copyright (C) 2024, S-Patriarch
+ * Patriarch library : pl::timer
+ */
+
+#ifndef PL_TIMER
+#define PL_TIMER 1
+
+#include <chrono>
+
+namespace pl {
+  /*
+   * Класс для замера времени работы кода.
+   *
+   * компонентные функции:
+   * start()                 - начало замера
+   * stop()                  - завершение замера
+   * duration_milliseconds() - результат замера в миллисекундах
+   * duration_seconds()      - результат замера в секундах
+   * duration_minutes()      - результат замера в минутах
+   * duration_hours()        - результат замера в часах
+   */
+  class Timer {
+    std::chrono::time_point<std::chrono::high_resolution_clock> _startTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> _endTime;
+
+  public:
+    Timer()
+      : _startTime{std::chrono::high_resolution_clock::now()}
+    {}
+
+    auto start() -> void;
+    auto stop() -> void;
+
+    auto duration_milliseconds() -> float const;
+    auto duration_seconds() -> float const;
+    auto duration_minutes() -> float const;
+    auto duration_hours() -> float const;
+  };
+
+  /*
+   * Реализация компонентных функций.
+   * class Timer
+   */
+
+  auto Timer::start()
+    -> void
+  {
+    _startTime = std::chrono::high_resolution_clock::now();
+  }
+
+  auto Timer::stop()
+    -> void
+  {
+    _endTime = std::chrono::high_resolution_clock::now();
+  }
+
+  auto Timer::duration_milliseconds()
+    -> float const
+  {
+    std::chrono::duration<float,std::milli> duration
+      = _endTime - _startTime;
+    return duration.count();
+  }
+
+  auto Timer::duration_seconds()
+    -> float const
+  {
+    std::chrono::duration<float> duration
+      = _endTime - _startTime;
+    return duration.count();
+  }
+
+  auto Timer::duration_minutes()
+    -> float const
+  {
+    std::chrono::duration<float,std::ratio<60>> duration
+      = _endTime - _startTime;
+    return duration.count();
+  }
+
+  auto Timer::duration_hours()
+    -> float const
+  {
+    std::chrono::duration<float,std::ratio<3600>> duration
+      = _endTime - _startTime;
+    return duration.count();
+  }
+}
+
+#endif

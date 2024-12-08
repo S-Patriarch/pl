@@ -1,0 +1,98 @@
+/*
+ * Copyright (C) 2024, S-Patriarch
+ * Patriarch library : pl::logger
+ */
+
+#ifndef PL_LOGGER
+#define PL_LOGGER 1
+
+#ifndef PL_EXCEPTION
+#include "pl.exception"
+#endif
+
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <mutex>
+#include <shared_mutex>
+
+namespace pl {
+  /*
+   * Класс для обработки логов в многопоточной среде.
+   *
+   * при создании обьекта, конструктор принимает путь и имя файла
+   * в который будет вестись отписывание логов
+   * при уничтожении обьекта данного класса, деструктор
+   * закрывает открытый конструктором файловый поток
+   *
+   * компонентные функции:
+   * write() - запись строки в журнал логов
+   * read()  - чтение строки из журнала логов
+   */
+  class Logger {
+    std::fstream      _file;  // файловый поток
+    std::shared_mutex _mutex; // мьютекс
+
+  public:
+    Logger(const std::string &);
+    ~Logger() noexcept;
+
+    auto write(const std::string &) -> void;
+    auto read() -> std::string;
+  };
+
+  /*
+   * Реализация компонентных функций.
+   * class Logger
+   */
+
+  Logger::Logger(const std::string &s_flog)
+  {
+    // открытие файла для чтения, вывода, добавления с отключенной буферизацией
+    _file.open(s_flog, std::ios::in|std::ios::out|std::ios::app);
+      if (!_file.is_open())
+        throw Exception("E: failed to open log file.");
+  }
+
+  Logger::~Logger() noexcept
+  {
+    if (_file.is_open()) _file.close();
+  }
+
+  auto Logger::write(const std::string &s)
+    -> void
+    // запись строки в журнал логов
+    // создание объекта lck типа std::unique_lock, который блокирует
+    // мьютекс m_mutex в режиме монопольной (или уникальной) блокировки
+    // это значит, что только один поток может иметь доступ к общему
+    // ресурсу, защищенному m_mutex, в данный момент времени
+    // объект lck будет автоматически освобожден при выходе из
+    // области видимости
+  {
+    std::unique_lock<std::shared_mutex> lck(_mutex);
+    if (_file.is_open()) {
+      _file
+        << s
+        << "\n"
+        << std::flush;
+    }
+  }
+
+  auto Logger::read()
+    -> std::string
+    // чтение строки из журнала логов
+    // создание объекта lck типа std::shared_lock, который блокирует
+    // мьютекс m_mutex в режиме совместной блокировки
+    // это позволяет нескольким потокам иметь одновременный доступ к
+    // общему ресурсу
+    // объект lck будет автоматически освобожден при выходе из
+    // области видимости
+  {
+    std::string s_res {};
+    std::shared_lock<std::shared_mutex> lck(_mutex);
+    if (_file.is_open()) std::getline(_file, s_res);
+    return s_res;
+  }
+}
+
+#endif
