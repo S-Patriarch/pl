@@ -1,0 +1,53 @@
+/*
+ * Copyright (C) 2024, S-Patriarch
+ * Patriarch library : pl::ios
+ */
+
+#ifndef PL_IOS
+#define PL_IOS 1
+
+#include <iostream>
+#include <string>
+#include <shared_mutex>
+#include <mutex>
+
+namespace pl {
+  /*
+   * Класс для работы с потоковым вводом, выводом.
+   *
+   * компонентные функции:
+   * mout() - вывод сообщения в терминал
+   */
+  class ios {
+    std::shared_mutex m_mutex;
+  public:
+    auto mout(const std::string &, int) -> void const;
+  };
+
+  /*
+   * Реализация компонентных функций.
+   * class ios
+   */
+
+  auto ios::mout(const std::string &message, int status =0)
+    -> void const
+    // функция потокобезопасно выводит сообщение в терминал
+  {
+    std::string sub_message {};
+
+    switch (status) {
+    case 1:  sub_message = "W: "; break;
+    case 2:  sub_message = "E: "; break;
+    case 0:  sub_message = "";    break;
+    default: sub_message = "";    break;
+    }
+
+    std::unique_lock<std::shared_mutex> lck(m_mutex);
+    std::cout
+      << sub_message
+      << message
+      << std::endl;
+  }
+}
+
+#endif
