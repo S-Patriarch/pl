@@ -1,0 +1,515 @@
+/*
+ * Copyright (C) 2025, S-Patriarch
+ * Patriarch library : pl::Conio
+ */
+
+#ifndef PL_CONIO
+#define PL_CONIO 1
+
+#include <iostream>
+#include <ostream>
+#include <string>
+#include <cstring>
+#include <termios.h>
+#include <unistd.h>
+
+namespace pl {
+
+    using std::cout;
+    using std::endl;
+    using std::string;
+    using std::to_string;
+
+    class Conio {
+        string ESC {"\033"};
+
+        struct TextInfo {
+            int curx {0};
+            int cury {0};
+        } text;
+
+    public:
+        enum Attributes {
+            // Format text
+            RESET           = 0,   // сбросить все атрибуты
+            BRIGHT          = 1,   // повышенная яркость
+            DIM             = 2,   // затемнение
+            ITALIC          = 3,   // курсив
+            UNDERSCORE      = 4,   // нижнее подчеркивание
+            BLINK           = 5,   // мигание
+            REVERSE         = 7,   // инверсия
+            HIDDEN          = 8,   // скрыть текст
+            CROSSED_OUT     = 9,   // зачеркнутый
+
+            // Foreground Colors
+            F_DEFAULT       = 39,  // цвет переднего плана по умолчанию
+            F_BLACK         = 30,
+            F_RED           = 31,
+            F_GREEN         = 32,
+            F_YELLOW        = 33,
+            F_BLUE          = 34,
+            F_MAGENTA       = 35,
+            F_CYAN          = 36,
+            F_LIGHT_GRAY    = 37,
+            F_DARK_GRAY     = 90,
+            F_LIGHT_RED     = 91,
+            F_LIGHT_GREEN   = 92,
+            F_LIGHT_YELLOW  = 93,
+            F_LIGHT_BLUE    = 94,
+            F_LIGHT_MAGENTA = 95,
+            F_LIGHT_CYAN    = 96,
+            F_WHITE         = 97,
+
+            // Background Colors
+            B_DEFAULT       = 49,  // цвет фона по умолчанию
+            B_BLACK         = 40,
+            B_RED           = 41,
+            B_GREEN         = 42,
+            B_YELLOW        = 43,
+            B_BLUE          = 44,
+            B_MAGENTA       = 45,
+            B_CYAN          = 46,
+            B_LIGHT_GRAY    = 47,
+            B_DARK_GRAY     = 100,
+            B_LIGHT_RED     = 101,
+            B_LIGHT_GREEN   = 102,
+            B_LIGHT_YELLOW  = 103,
+            B_LIGHT_BLUE    = 104,
+            B_LIGHT_MAGENTA = 105,
+            B_LIGHT_CYAN    = 106,
+            B_WHITE         = 107,
+        };
+
+        auto sety(int) -> void;
+        auto setx(int) -> void;
+        auto gety() -> int const;
+        auto getx() -> int const;
+
+        auto gotoyx(int,int) -> void;
+
+        auto getch() -> int const;
+        auto getline(const int) -> string const;
+        auto getlinehidden() -> string const;
+
+        auto set_attr_mode(Attributes) -> void const;
+        auto res_attr_mode() -> void const;
+
+        auto set_color(Attributes,int) -> void;
+
+        // методы управления положением курсора на экране терминала
+        auto cursor_home(int,int) -> void;
+        auto cursor_up(int) -> void;
+        auto cursor_down(int) -> void;
+        auto cursor_forward(int) -> void;
+        auto cursor_backward(int) -> void;
+        auto cursor_force_position(int,int) -> void;
+        auto cursor_save() -> void const;
+        auto cursor_unsave() -> void const;
+        auto cursor_save_and_attrs() -> void const;
+        auto cursor_unsave_and_attrs() -> void const;
+
+        // методы управления скроллингом экрана терминала
+        auto scroll_screen_all() -> void const;
+        auto scroll_screen(int,int) -> void const;
+        auto scroll_down() -> void const;
+        auto scroll_up() -> void const;
+
+        // методы управления табуляцией
+        auto tab_set() -> void const;
+        auto tab_clear() -> void const;
+        auto tab_clear_all() -> void const;
+
+        // методы стирания текста
+        auto erase_end_of_line() -> void const;
+        auto erase_begin_of_line() -> void const;
+        auto erase_line() -> void const;
+        auto erase_down() -> void const;
+        auto erase_up() -> void const;
+        auto erase_screen() -> void const;
+
+        // методы установки режима терминала
+        auto device_reset() -> void const;
+        auto line_wrap_enable() -> void const;
+        auto line_wrap_disable() -> void const;
+    };
+
+    auto Conio::sety(int y) -> void
+    {text.cury = y;}
+
+    auto Conio::setx(int x) -> void
+    {text.curx = x;}
+
+    auto Conio::gety() -> int const
+    {return text.cury;}
+
+    auto Conio::getx() -> int const
+    {return text.curx;}
+
+    auto Conio::gotoyx(int y, int x) -> void
+    {
+        text.cury = y;
+        text.curx = x;
+        cout
+            << ESC
+            << "["
+            << to_string(y)
+            << ";"
+            << to_string(x)
+            << "H";
+    }
+
+    auto Conio::getch() -> int const
+        // получение символа с клавиатуры без ожидания нажатия enter
+        // аналог функции _getch() в стандартной библиотеке conio.h <OS Windows>
+        // реализация данной функции предназначена для работы в OS GNU/Linux
+    {
+        int buf {0};
+        struct termios old = {0};
+        if (tcgetattr(0, &old) < 0) perror("tcsetattr()");
+        old.c_lflag &= ~ICANON;
+        old.c_lflag &= ~ECHO;
+        old.c_cc[VMIN] = 1;
+        old.c_cc[VTIME] = 0;
+        if (tcsetattr(0, TCSANOW, &old) < 0) perror("tcsetattr ICANON");
+        if (read(0, &buf, 1) < 0) perror("read()");
+        old.c_lflag |= ICANON;
+        old.c_lflag |= ECHO;
+        if (tcsetattr(0, TCSADRAIN, &old) < 0) perror("tcsetattr ~ICANON");
+        return buf;
+    }
+
+    auto Conio::getline(const int bs) -> string const
+        // считывает неформатированные данные из потока в
+        // строку типа std::string
+    {
+        char buf[bs];
+        std::memset(buf, 0, sizeof(buf));
+        std::fgets(buf, sizeof(buf), stdin);
+        return string(buf);
+    }
+
+    auto Conio::getlinehidden() -> string const
+    {
+        string s_res {};
+        struct termios old_t;
+        struct termios new_t;
+        // сохраняем текущие настройки терминала
+        tcgetattr(STDIN_FILENO, &old_t);
+        new_t = old_t;
+        new_t.c_lflag &= ~ECHO; // отключаем отображение ввода
+        // применяем новые настройки терминала
+        tcsetattr(STDIN_FILENO, TCSANOW, &new_t);
+        // читаем ввод пользователя
+        std::getline(std::cin, s_res);
+        // востанавливаем старые настройки терминала
+        tcsetattr(STDIN_FILENO, TCSANOW, &old_t);
+        return s_res;
+     }
+
+    auto Conio::set_attr_mode(Attributes attr) -> void const
+        // устанавливает атрибуты
+    {
+        cout
+            << ESC
+            << "["
+            << to_string(attr)
+            << "m";
+    }
+
+    auto Conio::res_attr_mode() -> void const
+        // сбрасывает все атрибуты
+    {
+        cout
+            << ESC
+            << "["
+            << to_string(Attributes::RESET)
+            << "m";
+    }
+
+    auto Conio::set_color(Attributes color, int bright =0) -> void
+        // устанавливает цвет переднего плана или фона
+        // если bright==1, осветляет цвета переднего плана или фона
+    {
+        if (bright==0 || bright<0 || bright>=2) {
+            cout
+                << ESC
+                << "["
+                << to_string(color)
+                << "m";
+        }
+        if (bright==1) {
+            cout
+                << ESC
+                << "["
+                << to_string(color)
+                << ";1m";
+        }
+    }
+
+    auto Conio::cursor_home(int row =0, int col =0) -> void
+        // устанавливает текущую позицию курсора, откуда будет начинаться
+        // последующий вывод текста
+        // если параметры не указаны, курсор переместится 'домой', т.е. в
+        // левую верхнию позицию экрана (позиция 0,0)
+    {
+        text.cury = row;
+        text.curx = col;
+        cout
+            << ESC
+            << "["
+            << to_string(row)
+            << ";"
+            << to_string(col)
+            << "H";
+    }
+
+    auto Conio::cursor_up(int count =1) -> void
+        // перемещает курсор вверх на count строк
+        // по умолчанию перемещает на 1 строку
+    {
+        text.cury -= count;
+        cout
+            << ESC
+            << "["
+            << to_string(count)
+            << "A";
+    }
+
+    auto Conio::cursor_down(int count =1) -> void
+        // перемещает курсор вниз на count строк
+        // по умолчанию перемещает на 1 строку
+    {
+        text.cury += count;
+        cout
+            << ESC
+            << "["
+            << to_string(count)
+            << "B";
+    }
+
+    auto Conio::cursor_forward(int count =1) -> void
+        // перемещает курсор вперед на count позиций
+        // по умолчанию перемещает на 1 позицию
+    {
+        text.curx += count;
+        cout
+            << ESC
+            << "["
+            << to_string(count)
+            << "C";
+    }
+
+    auto Conio::cursor_backward(int count =1) -> void
+        // перемещает курсор назад на count позиций
+        // по умолчанию перемещает на 1 позицию
+    {
+        text.curx -= count;
+        cout
+            << ESC
+            << "["
+            << to_string(count)
+            << "D";
+    }
+
+    auto Conio::cursor_force_position(int row =0, int col =0) -> void
+        // принудительно устанавливает позицию курсора
+        // работает точно так же, как метод cursor_home
+    {
+        text.cury = row;
+        text.curx = col;
+        cout
+            << ESC
+            << "["
+            << to_string(row)
+            << ";"
+            << to_string(col)
+            << "f";
+    }
+
+    auto Conio::cursor_save() -> void const
+        // сохраняет текущую позицию курсора
+    {
+        cout
+            << ESC
+            << "["
+            << "s";
+    }
+
+    auto Conio::cursor_unsave() -> void const
+        // востанавливает позицию курсора, как она была
+        // сохранена методом cursor_save
+    {
+        cout
+            << ESC
+            << "["
+            << "u";
+    }
+
+    auto Conio::cursor_save_and_attrs() -> void const
+        // сохраняет текущую позицию курсора вместе с атрибутами
+    {
+        cout
+            << ESC
+            << "7";
+    }
+
+    auto Conio::cursor_unsave_and_attrs() -> void const
+        // востанавливает позицию курсора вместе с атрибутами, как
+        // она была сохранена методом cursor_save_and_attrs
+    {
+        cout
+            << ESC
+            << "8";
+    }
+
+    auto Conio::scroll_screen_all() -> void const
+        // разрешает прокрутку всего экрана целиком
+    {
+        cout
+            << ESC
+            << "["
+            << "r";
+    }
+
+    auto Conio::scroll_screen(int begin, int end) -> void const
+        // разрешает прокрутку от начальной строки begin до
+        // конечной строки end
+    {
+        cout
+            << ESC
+            << "["
+            << to_string(begin)
+            << ";"
+            << to_string(end)
+            << "r";
+    }
+
+    auto Conio::scroll_down() -> void const
+        // прокручивает экран на одну строку вниз
+    {
+        cout
+            << ESC
+            << "D";
+    }
+
+    auto Conio::scroll_up() -> void const
+        // прокручивает экран на одну строку вверх
+    {
+        cout
+            << ESC
+            << "M";
+    }
+
+    auto Conio::tab_set() -> void const
+        // устанавливает табуляцию в текущей позиции
+    {
+        cout
+            << ESC
+            << "H";
+    }
+
+    auto Conio::tab_clear() -> void const
+        // очищает табуляцию в текущей позиции
+    {
+        cout
+            << ESC
+            << "["
+            << "g";
+    }
+
+    auto Conio::tab_clear_all() -> void const
+        // очищает все установленные позиции табуляции
+    {
+        cout
+            << ESC
+            << "["
+            << "3g";
+    }
+
+    auto Conio::erase_end_of_line() -> void const
+        // стирает текст от текущей позиции курсора до конца текущей строки
+    {
+        cout
+            << ESC
+            << "["
+            << "K";
+    }
+
+    auto Conio::erase_begin_of_line() -> void const
+        // стирает текст от текущей позиции курсора до начала текущей строки
+    {
+        cout
+            << ESC
+            << "["
+            << "1K";
+    }
+
+    auto Conio::erase_line() -> void const
+        // стирает все текущую строку
+    {
+        cout
+            << ESC
+            << "["
+            << "2K";
+    }
+
+    auto Conio::erase_down() -> void const
+        // стирает экран от текущей строки вниз до нижней границы экрана
+    {
+        cout
+            << ESC
+            << "["
+            << "J";
+    }
+
+    auto Conio::erase_up() -> void const
+        // стирает экран от текущей строки вверх до верхней границы экрана
+    {
+        cout
+            << ESC
+            << "["
+            << "1J";
+    }
+
+    auto Conio::erase_screen() -> void const
+        // стирает экран с заполнением его цветом фона
+        // курсор при этом перемещается 'домой' (верхний левый угол экрана)
+    {
+        cout
+            << ESC
+            << "["
+            << "2J";
+    }
+
+    auto Conio::device_reset() -> void const
+        // сбрасывает все настройки терминала в значения по умолчанию
+    {
+        cout
+            << ESC
+            << "c";
+    }
+
+    auto Conio::line_wrap_enable() -> void const
+        // разрешает переход на следующую строку: позиция вывода автоматически
+        // перескакивает на следующую строку, если она оказывается длиннее
+        // области отображения дисплея
+    {
+        cout
+            << ESC
+            << "["
+            << "7h";
+    }
+
+    auto Conio::line_wrap_disable() -> void const
+        // запрещает переход на следующую строку, если позиция вывода
+        // оказывается за пределами правого края экрана
+    {
+        cout
+            << ESC
+            << "["
+            << "7l";
+    }
+
+}
+
+#endif
