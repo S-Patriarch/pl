@@ -1,6 +1,44 @@
 /*
  * Copyright (C) 2025, S-Patriarch
  * Patriarch library : pl::Conio
+ *
+ * sety() - установка координаты y
+ * setx() - установка координаты x
+ * gety() - получение координаты y
+ * getx() - получение координаты x
+ * gotoyx() - устанавка позиции курсора
+ * getch() - получение символа с клавиатуры без ожидания нажатия enter
+ * getline() - считывание неформатированных данных из потока
+ * getlinehidden() - скрытое считывание неформатированных данных из потока
+ * set_attr_mode() - устанавка атрибутов
+ * res_attr_mode() - сброс все атрибутов
+ * set_color() - устанавка цвета переднего плана или фона
+ * cursor_home() - устанавка текущей позиции курсора
+ * cursor_up() - перемещение курсора вверх
+ * cursor_down() - перемещение курсора вниз
+ * cursor_forward() - перемещение курсора вперед
+ * cursor_backward() - перемещение курсора назад
+ * cursor_force_position() - принудительная устанавка позиции курсора
+ * cursor_save() - сохранение текущей позиции курсора
+ * cursor_unsave() - востанавление позиции курсора
+ * cursor_save_and_attrs() - сохранение текущей позиции курсора вместе с атрибутами
+ * cursor_unsave_and_attrs() - востанавление позиции курсора вместе с атрибутами
+ * scroll_screen_all() - разрешает прокрутку всего экрана целиком
+ * scroll_screen() - разрешает прокрутку от начальной до конечной строки
+ * scroll_down() - прокрутка экрана на одну строку вниз
+ * scroll_up() - прокрутка экрана на одну строку вверх
+ * tab_set() - устанавка табуляции в текущей позиции
+ * tab_clear() - очищение табуляции в текущей позиции
+ * tab_clear_all() - очищение всех установленных позиции табуляции
+ * erase_end_of_line() - стирание текста от текущей позиции курсора до конца текущей строки
+ * erase_begin_of_line() - стирание текста от текущей позиции курсора до начала текущей строки
+ * erase_line() - стирание всей текущей строки
+ * erase_down() - стирание экрана от текущей строки вниз до нижней границы экрана
+ * erase_up() - стирание экрана от текущей строки вверх до верхней границы экрана
+ * erase_screen() - стирание экрана с заполнением его цветом фона
+ * device_reset() - сбрасывание всех настроек терминала в значения по умолчанию
+ * line_wrap_enable() - разрешает переход на следующую строку
+ * line_wrap_disable() - запрещает переход на следующую строку
  */
 
 #ifndef PL_CONIO
@@ -85,7 +123,7 @@ namespace pl {
         auto gety() -> int const;
         auto getx() -> int const;
 
-        auto gotoyx(int,int) -> void;
+        auto gotoyx(int, int) -> void;
 
         auto getch() -> int const;
         auto getline(const int) -> string const;
@@ -94,15 +132,15 @@ namespace pl {
         auto set_attr_mode(Attributes) -> void const;
         auto res_attr_mode() -> void const;
 
-        auto set_color(Attributes,int) -> void;
+        auto set_color(Attributes, int) -> void;
 
         // методы управления положением курсора на экране терминала
-        auto cursor_home(int,int) -> void;
+        auto cursor_home(int, int) -> void;
         auto cursor_up(int) -> void;
         auto cursor_down(int) -> void;
         auto cursor_forward(int) -> void;
         auto cursor_backward(int) -> void;
-        auto cursor_force_position(int,int) -> void;
+        auto cursor_force_position(int, int) -> void;
         auto cursor_save() -> void const;
         auto cursor_unsave() -> void const;
         auto cursor_save_and_attrs() -> void const;
@@ -110,7 +148,7 @@ namespace pl {
 
         // методы управления скроллингом экрана терминала
         auto scroll_screen_all() -> void const;
-        auto scroll_screen(int,int) -> void const;
+        auto scroll_screen(int, int) -> void const;
         auto scroll_down() -> void const;
         auto scroll_up() -> void const;
 
