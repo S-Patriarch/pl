@@ -2,7 +2,7 @@
  * Copyright (C) 2025, S-Patriarch
  * Patriarch library : pl::Exception
  *
- * usage:
+ * Usage:
  *   В коде программы бросается исключение следующим образом:
  *     throw pl::Exception("E: Message to exception.");
  *
