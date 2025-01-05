@@ -26,15 +26,15 @@
 namespace pl {
 
     class Exception final : public std::exception {
-        const char *m_message;
+        const char *message_;
 
     public:
-        Exception(const char *mess) : std::exception(), m_message{mess} {}
+        Exception(const char *mess) : std::exception(), message_{mess} {}
         ~Exception() noexcept {}
 
         virtual const char *what() const noexcept override
             // перегрузка метода what() стандартного класса std::exception
-        {return m_message;}
+        {return message_;}
     };
 
 }
