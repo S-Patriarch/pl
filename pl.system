@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2024, S-Patriarch
- * Patriarch library : pl::system
+ * Copyright (C) 2025, S-Patriarch
+ * Patriarch library : pl::System
+ *
+ * is_locale_available() - определение доступности языковой локали
  */
 
 #ifndef PL_SYSTEM
@@ -12,40 +14,30 @@
 #include <cstdio>
 
 namespace pl {
-  /*
-   * Класс для работы с системой.
-   *
-   * компонентные функции:
-   * is_locale_available() - определение доступности языковой локали
-   */
-  class System {
-  public:
-    auto is_locale_available(const std::string &) -> bool;
-  };
 
-  /*
-   * Реализация компонентных функций.
-   * class System
-   */
+    class System {
+    public:
+        auto is_locale_available(const std::string &) -> bool;
+    };
 
-  auto System::is_locale_available(const std::string &loc)
-    -> bool
-    // функция определения доступности языковой локали
-  {
-    std::array<char,128> buf;
-    std::string res {};
+    auto System::is_locale_available(const std::string &loc) -> bool
+        // функция определения доступности языковой локали
+    {
+        std::array<char,128> buf;
+        std::string res {};
 
-    // выполняем команду locale -a и получаем результат
-    std::shared_ptr<FILE> pipe(popen("locale -a","r"), pclose);
-    if (!pipe) return false;
+        // выполняем команду locale -a и получаем результат
+        std::shared_ptr<FILE> pipe(popen("locale -a","r"), pclose);
+        if (!pipe) return false;
 
-    // читаем вывод команды
-    while (std::fgets(buf.data(), buf.size(), pipe.get()) != nullptr)
-      res += buf.data();
+        // читаем вывод команды
+        while (std::fgets(buf.data(), buf.size(), pipe.get()) != nullptr)
+            res += buf.data();
 
-    // проверяем, содержится ли нужная локаль в выводе
-    return (res.find(loc) != std::string::npos);
-  }
+        // проверяем, содержится ли нужная локаль в выводе
+        return (res.find(loc) != std::string::npos);
+    }
+
 }
 
 #endif
