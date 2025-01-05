@@ -20,7 +20,7 @@ namespace pl {
     using std::string;
 
     class ios {
-        std::shared_mutex m_mutex;
+        std::shared_mutex mutex_;
 
     public:
         auto mout(const string &, int) -> void const;
@@ -38,7 +38,7 @@ namespace pl {
         default: sub_message = "";    break;
         }
 
-        std::unique_lock<std::shared_mutex> lck(m_mutex);
+        std::unique_lock<std::shared_mutex> lck(mutex_);
         cout
             << sub_message
             << message
