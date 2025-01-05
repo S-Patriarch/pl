@@ -24,8 +24,8 @@ namespace pl {
     using std::string;
 
     class Logger {
-        std::fstream      m_file;  // файловый поток
-        std::shared_mutex m_mutex; // мьютекс
+        std::fstream      file_;  // файловый поток
+        std::shared_mutex mutex_; // мьютекс
 
     public:
         Logger(const string &);
@@ -39,13 +39,13 @@ namespace pl {
     {
         // открытие файла для чтения, вывода,
         // добавления с отключенной буферизацией
-        m_file.open(s_flog, std::ios::in|std::ios::out|std::ios::app);
-        if (!m_file.is_open())
+        file_.open(s_flog, std::ios::in|std::ios::out|std::ios::app);
+        if (!file_.is_open())
             throw Exception("E: failed to open log file.");
     }
 
     Logger::~Logger() noexcept
-    {if (m_file.is_open()) m_file.close();}
+    {if (file_.is_open()) file_.close();}
 
     auto Logger::write(const string &s) -> void
         // запись строки в журнал логов
@@ -56,9 +56,9 @@ namespace pl {
         // объект lck будет автоматически освобожден при выходе из
         // области видимости
     {
-        std::unique_lock<std::shared_mutex> lck(m_mutex);
-        if (m_file.is_open()) {
-            m_file
+        std::unique_lock<std::shared_mutex> lck(mutex_);
+        if (file_.is_open()) {
+            file_
                 << s
                 << "\n"
                 << std::flush;
@@ -75,8 +75,8 @@ namespace pl {
         // области видимости
     {
         string s_res {};
-        std::shared_lock<std::shared_mutex> lck(m_mutex);
-        if (m_file.is_open()) std::getline(m_file, s_res);
+        std::shared_lock<std::shared_mutex> lck(mutex_);
+        if (file_.is_open()) std::getline(file_, s_res);
         return s_res;
     }
 
