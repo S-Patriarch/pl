@@ -1,6 +1,21 @@
 /*
- * Copyright (C) 2024, S-Patriarch
- * Patriarch library : pl::exception
+ * Copyright (C) 2025, S-Patriarch
+ * Patriarch library : pl::Exception
+ *
+ * usage:
+ *   В коде программы бросается исключение следующим образом:
+ *     throw pl::Exception("E: Message to exception.");
+ *
+ *   Ловится данное исключение следующим образом:
+ *     try {
+ *       throw pl::Exception("E: Message to exception.");
+ *     }
+ *     catch (std::exception &ex) {
+ *       std::cout
+ *         << "\nПоймано исключение: "
+ *         << ex.what()
+ *         << std::endl;
+ *     }
  */
 
 #ifndef PL_EXCEPTION
@@ -9,38 +24,19 @@
 #include <exception>
 
 namespace pl {
-  /*
-   * Работа с исключениями.
-   * Класс наследуется от библиотечного класса - std::exception.
-   *
-   * usage:
-   *   В коде программы бросается исключение следующим образом:
-   *     throw pl::Exception("E: Message to exception.");
-   *
-   *   Ловится данное исключение следующим образом:
-   *     try {
-   *       throw pl::Exception("E: Message to exception.");
-   *     }
-   *     catch (std::exception &ex) {
-   *       std::cout
-   *         << "\nПоймано исключение: "
-   *         << ex.what()
-   *         << std::endl;
-   *     }
-   */
-  class Exception final : public std::exception {
-    const char *_message;
 
-  public:
-    Exception(const char *mess) : std::exception(), _message{mess} {}
-    ~Exception() noexcept {}
+    class Exception final : public std::exception {
+        const char *m_message;
 
-    virtual const char *what() const noexcept override
-      // перегрузка метода what() стандартного класса std::exception
-    { 
-      return _message;
-    }
-  };
+    public:
+        Exception(const char *mess) : std::exception(), m_message{mess} {}
+        ~Exception() noexcept {}
+
+        virtual const char *what() const noexcept override
+            // перегрузка метода what() стандартного класса std::exception
+        {return m_message;}
+    };
+
 }
 
 #endif
