@@ -13,12 +13,11 @@
  * set_attr_mode() - устанавка атрибутов
  * res_attr_mode() - сброс все атрибутов
  * set_color() - устанавка цвета переднего плана или фона
- * cursor_home() - устанавка текущей позиции курсора
+ * cursor_move() - устанавка текущей позиции курсора
  * cursor_up() - перемещение курсора вверх
  * cursor_down() - перемещение курсора вниз
  * cursor_forward() - перемещение курсора вперед
  * cursor_backward() - перемещение курсора назад
- * cursor_force_position() - принудительная устанавка позиции курсора
  * cursor_save() - сохранение текущей позиции курсора
  * cursor_unsave() - востанавление позиции курсора
  * cursor_save_and_attrs() - сохранение текущей позиции курсора вместе с атрибутами
@@ -58,7 +57,6 @@ namespace pl {
     using std::cout;
     using std::endl;
     using std::string;
-    using std::to_string;
 
     class Conio {
         string ESC {"\033"};
@@ -140,12 +138,11 @@ namespace pl {
         auto set_color(Attributes, int) -> void;
 
         // методы управления положением курсора на экране терминала
-        auto cursor_home(int, int) -> void;
+        auto cursor_move(int, int) -> void;
         auto cursor_up(int) -> void;
         auto cursor_down(int) -> void;
         auto cursor_forward(int) -> void;
         auto cursor_backward(int) -> void;
-        auto cursor_force_position(int, int) -> void;
         auto cursor_save() -> void const;
         auto cursor_unsave() -> void const;
         auto cursor_save_and_attrs() -> void const;
@@ -197,9 +194,9 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(y)
+            << text.cury
             << ";"
-            << to_string(x)
+            << text.curx
             << "H";
     }
 
@@ -257,7 +254,7 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(attr)
+            << attr
             << "m";
     }
 
@@ -267,7 +264,7 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(Attributes::RESET)
+            << Attributes::RESET
             << "m";
     }
 
@@ -279,19 +276,19 @@ namespace pl {
             cout
                 << ESC
                 << "["
-                << to_string(color)
+                << color
                 << "m";
         }
         if (bright==1) {
             cout
                 << ESC
                 << "["
-                << to_string(color)
+                << color
                 << ";1m";
         }
     }
 
-    auto Conio::cursor_home(int row =0, int col =0) -> void
+    auto Conio::cursor_move(int row =0, int col =0) -> void
         // устанавливает текущую позицию курсора, откуда будет начинаться
         // последующий вывод текста
         // если параметры не указаны, курсор переместится 'домой', т.е. в
@@ -302,9 +299,9 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(row)
+            << text.cury
             << ";"
-            << to_string(col)
+            << text.curx
             << "H";
     }
 
@@ -316,7 +313,7 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(count)
+            << count
             << "A";
     }
 
@@ -328,7 +325,7 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(count)
+            << count
             << "B";
     }
 
@@ -340,7 +337,7 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(count)
+            << count
             << "C";
     }
 
@@ -352,23 +349,8 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(count)
+            << count
             << "D";
-    }
-
-    auto Conio::cursor_force_position(int row =0, int col =0) -> void
-        // принудительно устанавливает позицию курсора
-        // работает точно так же, как метод cursor_home
-    {
-        text.cury = row;
-        text.curx = col;
-        cout
-            << ESC
-            << "["
-            << to_string(row)
-            << ";"
-            << to_string(col)
-            << "f";
     }
 
     auto Conio::cursor_save() -> void const
@@ -441,9 +423,9 @@ namespace pl {
         cout
             << ESC
             << "["
-            << to_string(begin)
+            << begin
             << ";"
-            << to_string(end)
+            << end
             << "r";
     }
 
