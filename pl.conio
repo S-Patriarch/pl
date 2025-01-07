@@ -6,6 +6,8 @@
  * setx() - установка координаты x
  * gety() - получение координаты y
  * getx() - получение координаты x
+ * getwsrow() - получение количества строк экрана
+ * getwscol() - получение количества столбцов экрана
  * gotoyx() - устанавка позиции курсора
  * getch() - получение символа с клавиатуры без ожидания нажатия enter
  * getline() - считывание неформатированных данных из потока
@@ -51,6 +53,7 @@
 #include <cstring>
 #include <termios.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 
 namespace pl {
 
@@ -66,8 +69,13 @@ namespace pl {
             int cury {0};
         } text;
 
+        struct WinSize {
+            int wsrow {0};
+            int wscol {0};
+        } ws;
+
     public:
-        Conio() =default;
+        Conio();
         virtual ~Conio() noexcept =default;
 
         enum Attributes {
@@ -126,6 +134,9 @@ namespace pl {
         auto gety() -> int const;
         auto getx() -> int const;
 
+        auto getwsrow() -> int const;
+        auto getwscol() -> int const;
+
         auto gotoyx(int, int) -> void;
 
         auto getch() -> int const;
@@ -175,6 +186,19 @@ namespace pl {
         auto line_wrap_disable() -> void const;
     };
 
+    Conio::Conio()
+    {
+        struct winsize size;
+        if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
+            ws.wsrow = size.ws_row;
+            ws.wscol = size.ws_col;
+        }
+        else {
+            ws.wsrow = 0;
+            ws.wscol = 0;
+        }
+    }
+
     auto Conio::sety(int y) -> void
     {text.cury = y;}
 
@@ -186,6 +210,12 @@ namespace pl {
 
     auto Conio::getx() -> int const
     {return text.curx;}
+
+    auto Conio::getwsrow() -> int const
+    {return ws.wsrow;}
+
+    auto Conio::getwscol() -> int const
+    {return ws.wscol;}
 
     auto Conio::gotoyx(int y, int x) -> void
     {
