@@ -23,6 +23,8 @@
  * cursor_unsave() - востанавление позиции курсора
  * cursor_save_and_attrs() - сохранение текущей позиции курсора вместе с атрибутами
  * cursor_unsave_and_attrs() - востанавление позиции курсора вместе с атрибутами
+ * cursor_hidden() - скрытие курсора
+ * cursor_visible() - показ курсора
  * scroll_screen_all() - разрешает прокрутку всего экрана целиком
  * scroll_screen() - разрешает прокрутку от начальной до конечной строки
  * scroll_down() - прокрутка экрана на одну строку вниз
@@ -145,6 +147,8 @@ namespace pl {
         auto cursor_unsave() -> void const;
         auto cursor_save_and_attrs() -> void const;
         auto cursor_unsave_and_attrs() -> void const;
+        auto cursor_hidden() -> void const;
+        auto cursor_visible() -> void const;
 
         // методы управления скроллингом экрана терминала
         auto scroll_screen_all() -> void const;
@@ -398,6 +402,24 @@ namespace pl {
         cout
             << ESC
             << "8";
+    }
+
+    auto Conio::cursor_hidden() -> void const
+        // скрывает курсор
+    {
+        cout
+            << ESC
+            << "["
+            << "?25l";
+    }
+
+    auto Conio::cursor_visible() -> void const
+        // показывает курсор
+    {
+        cout
+            << ESC
+            << "["
+            << "?25h";
     }
 
     auto Conio::scroll_screen_all() -> void const
