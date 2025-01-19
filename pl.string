@@ -7,6 +7,7 @@
  * extract_digits() - последовательное извлечение цифр из строки
  * count_char() - подсчет количества вхождений символа в строку
  * count_words() - подсчет количества слов в строке
+ * count_utf8_characters() - подсчет количества символов в строке UTF-8
  */
 
 #ifndef PL_STRING
@@ -31,6 +32,7 @@ namespace pl {
         auto extract_digits(const string &) -> vector<unsigned short int>;
         auto count_char(const string &, char) -> int;
         auto count_words(const string &) -> int;
+        auto count_utf8_characters(const string &) -> int;
     };
 
     auto String::strspl(const string &s) -> vector<string>
@@ -81,6 +83,16 @@ namespace pl {
         string w {};
         int count {0};
         while (ss >> w) {++count;}
+        return count;
+    }
+
+    auto String::count_utf8_characters(const string &s) -> int
+        // функция для подсчета количества символов в строке UTF-8
+    {
+        int count {0};
+        for (const char c : s) {
+            if ((c & 0xC0) != 0x80) {++count;}
+        }
         return count;
     }
 
