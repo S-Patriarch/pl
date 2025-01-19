@@ -42,6 +42,8 @@
  * device_reset() - сбрасывание всех настроек терминала в значения по умолчанию
  * line_wrap_enable() - разрешает переход на следующую строку
  * line_wrap_disable() - запрет перехода на следующую строку
+ * screen_save() - вход в альтернативный экран
+ * screen_restore() - выход из альтернативного экрана
  */
 
 #ifndef PL_CONIO
@@ -184,6 +186,9 @@ namespace pl {
         auto device_reset() -> void const;
         auto line_wrap_enable() -> void const;
         auto line_wrap_disable() -> void const;
+
+        auto screen_save() -> void const;
+        auto screen_restore() -> void const;
     };
 
     Conio::Conio()
@@ -583,6 +588,26 @@ namespace pl {
             << ESC
             << "["
             << "7l";
+    }
+
+    auto Conio::screen_save() -> void const
+        // вход в альтернативный экран
+    {
+        cout
+            << ESC
+            << "["
+            << "?1049h";
+        cout.flush();
+    }
+
+    auto Conio::screen_restore() -> void const
+        // выход из альтернативного экрана
+    {
+        cout
+            << ESC
+            << "["
+            << "?1049l";
+        cout.flush();
     }
 
 }
