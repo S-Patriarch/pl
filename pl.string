@@ -27,6 +27,9 @@ namespace pl {
 
     class String {
     public:
+        String() =default;
+        virtual ~String() noexcept =default;
+
         auto strspl(const string &) -> vector<string>;
         auto strrev(string &) -> void;
         auto extract_digits(const string &) -> vector<unsigned short int>;
