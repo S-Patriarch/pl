@@ -3,6 +3,10 @@
  * Patriarch library : pl::Line
  *
  * set_line_color() - установка атрибутов цвета линии
+ * set_line_yx() - установка начальных координат линии
+ * set_line_length() - установка длины линии
+ * set_line_view() - установка вида линии
+ * set_line_direction() - установка направления линии
  * ldraw() - отрисовка линии
  */
 
@@ -40,6 +44,10 @@ namespace pl {
         ~Line() noexcept =default;
 
         auto set_line_color(CA, CA) -> void;
+        auto set_line_yx(int, int) -> void;
+        auto set_line_length(int) -> void;
+        auto set_line_view(LineDrawings) -> void;
+        auto set_lene_direction(LineDirection) -> void;
         auto ldraw() -> void const;
 
     private:
@@ -70,6 +78,21 @@ namespace pl {
         fcolorline_ = fcolor;
         bcolorline_ = bcolor;
     }
+
+    auto Line::set_line_yx(int y, int x) -> void
+    {
+        starty_ = y;
+        startx_ = x;
+    }
+
+    auto Line::set_line_length(int length) -> void
+    {length_ = length;}
+
+    auto Line::set_line_view(LineDrawings line) -> void
+    {line_ = line;}
+
+    auto Line::set_lene_direction(LineDirection direction) -> void
+    {direction_ = direction;}
 
     auto Line::ldraw() -> void const
     {
