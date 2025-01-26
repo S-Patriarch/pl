@@ -47,7 +47,7 @@ namespace pl {
         auto set_line_yx(int, int) -> void;
         auto set_line_length(int) -> void;
         auto set_line_view(LineDrawings) -> void;
-        auto set_lene_direction(LineDirection) -> void;
+        auto set_line_direction(LineDirection) -> void;
         auto ldraw() -> void const;
 
     private:
@@ -91,7 +91,7 @@ namespace pl {
     auto Line::set_line_view(LineDrawings line) -> void
     {line_ = line;}
 
-    auto Line::set_lene_direction(LineDirection direction) -> void
+    auto Line::set_line_direction(LineDirection direction) -> void
     {direction_ = direction;}
 
     auto Line::ldraw() -> void const
