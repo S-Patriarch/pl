@@ -41,7 +41,7 @@ namespace pl {
         };
 
         Line(int, int, int, LineDrawings, LineDirection);
-        ~Line() noexcept =default;
+        virtual ~Line() noexcept =default;
 
         auto set_line_color(CA, CA) -> void;
         auto set_line_yx(int, int) -> void;
