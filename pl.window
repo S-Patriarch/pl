@@ -137,7 +137,8 @@ namespace pl {
     auto Window::set_color_title(
         CA fcolor =CA::F_DEFAULT,
         CA bcolor =CA::B_DEFAULT,
-        const string &titleattr ="") -> void
+        const string &titleattr ="")
+        -> void
     {
         fcolortitle_ = fcolor;
         bcolortitle_ = bcolor;
@@ -147,7 +148,8 @@ namespace pl {
     auto Window::set_color_text(
         CA fcolor =CA::F_DEFAULT,
         CA bcolor =CA::B_DEFAULT,
-        const string &textattr ="") -> void
+        const string &textattr ="")
+        -> void
     {
         fcolortext_ = fcolor;
         bcolortext_ = bcolor;
@@ -159,7 +161,8 @@ namespace pl {
 
     auto Window::set_title(
         const string &title,
-        TitleLocation titlelocation =TitleLocation::LEFT) -> void
+        TitleLocation titlelocation =TitleLocation::LEFT)
+        -> void
     {
         title_ = title;
         titlelocation_ = titlelocation;
