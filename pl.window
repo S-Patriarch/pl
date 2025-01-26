@@ -1,0 +1,304 @@
+/*
+ * Copyright (C) 2025, S-Patriarch
+ * Patriarch library : pl::Window
+ *
+ * set_color_window() - установка атрибутов цвета окна
+ * set_color_title() - установка атрибутов цвета заголовка окна
+ * set_color_text() - установка атрибутов цвета текста окна
+ * set_frame() - установка рамки окна
+ * set_title() - установка заголовка окна
+ * wdraw() - отрисовка окна
+ * wclose() - закрытие окна
+ * wout() - вывод информации в окно
+ */
+
+#ifndef PL_WINDOW
+#define PL_WINDOW 1
+
+#include <iostream>
+#include <cstddef>
+#include <string>
+#include <vector>
+
+#ifndef PL_CONIO
+#include "pl.conio"
+#endif
+
+#ifndef PL_STRING
+#include "pl.string"
+#endif
+
+namespace pl {
+
+    using std::cout;
+    using std::endl;
+    using std::size_t;
+    using std::string;
+    using std::vector;
+
+    using CA = pl::Conio::Attributes;
+
+    class Window : public Conio, public String {
+    public:
+        enum BoxDrawings {
+            BOX_DRAWINGS_NOT,                // пустая рамка
+            BOX_DRAWINGS_SINGLE_LIGHT,       // одинарная тонкая рамка
+            BOX_DRAWINGS_SINGLE_LIGHT_ROUND, // одинарная тонкая рамка с круглыми углами
+            BOX_DRAWINGS_SINGLE_HEAVY,       // одинарная толстая рамка
+            BOX_DRAWINGS_DOUBLE_LIGHT        // двойная тонкая рамка
+        };
+
+        enum TitleLocation {
+            TITLE_LOCATION_LEFT,    // отрисовка заголовка в левой части окна
+            TITLE_LOCATION_CENTRAL, // отрисовка заголовка по центру окна
+            TITLE_LOCATION_RIGHT    // отрисовка заголовка в правой части окна
+        };
+
+        Window(int, int, int, int, size_t);
+        virtual ~Window() noexcept =default;
+
+        auto set_color_window(CA, CA) -> void;
+        auto set_color_title(CA, CA, const string &) -> void;
+        auto set_color_text(CA, CA, const string &) -> void;
+        auto set_frame(BoxDrawings) -> void;
+        auto set_title(const string &, TitleLocation) -> void;
+
+        auto wdraw() -> void const;
+        auto wclose() -> void const;
+        auto wout(const string &) -> void const;
+
+    private:
+        int starty_;                     // координата y левого верхнего угла окна
+        int startx_;                     // координата x левого верхнего угла окна
+        int height_;                     // высота окна
+        int width_;                      // ширина окна
+
+        size_t shadow_;                  // отрисовка тени окна
+
+        string title_ {};                // заголовок окна
+        string titleattr_ {};            // свободный атрибут заголовка окна
+        string textattr_ {};             // свободный атрибут текста окна
+
+        BoxDrawings   frame_;            // вид рамки окна
+        TitleLocation titlelocation_;    // локация отрисовки заголовка окна
+
+        CA fcolorwin_   {CA::F_DEFAULT}; // цвет рамки окна
+        CA bcolorwin_   {CA::B_DEFAULT}; // цвет фона рамки окна
+        CA fcolortitle_ {CA::F_DEFAULT}; // цвет заголовка окна
+        CA bcolortitle_ {CA::B_DEFAULT}; // цвет фона заголовка окна
+        CA fcolortext_  {CA::F_DEFAULT}; // цвет текста окна
+        CA bcolortext_  {CA::B_DEFAULT}; // цвет фона текста окна
+
+        int textcount_ {};
+        int textcountmax_ {};
+
+        vector<vector<int>> matrix_;     // матрица области под окном
+
+        auto draw_title() -> void const;
+        //auto draw_shadow() -> void const;
+        //auto matrix_save() -> void const;
+        //auto matrix_restore() -> void const;
+    };
+
+    /*
+     * Реализация методов класса pl::Window
+     */
+
+    Window::Window(
+        int rows,
+        int cols,
+        int y =-1,
+        int x =-1,
+        size_t shadow =0)
+        : starty_{y}, startx_{x}, height_{rows}, width_{cols}
+    {
+        if (shadow == 0) shadow_ = 0;
+        else shadow_ = 1;
+
+        if (y<0 || x<0) {
+            int row = getwsrow();
+            int col = getwscol();
+            starty_ = row/2-height_/2-1;
+            startx_ = col/2-width_/2-1;
+        }
+
+        frame_ = BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT;
+        textcountmax_ = height_-2;
+
+        matrix_.resize(height_+1, vector<int>(width_+1, 0));
+    }
+
+    auto Window::set_color_window(CA fcolor, CA bcolor) -> void
+    {
+        fcolorwin_ = fcolor;
+        bcolorwin_ = bcolor;
+    }
+
+    auto Window::set_color_title(
+        CA fcolor =CA::F_DEFAULT,
+        CA bcolor =CA::B_DEFAULT,
+        const string &titleattr ="") -> void
+    {
+        fcolortitle_ = fcolor;
+        bcolortitle_ = bcolor;
+        titleattr_   = titleattr;
+    }
+
+    auto Window::set_color_text(
+        CA fcolor =CA::F_DEFAULT,
+        CA bcolor =CA::B_DEFAULT,
+        const string &textattr ="") -> void
+    {
+        fcolortext_ = fcolor;
+        bcolortext_ = bcolor;
+        textattr_   = textattr;
+    }
+
+    auto Window::set_frame(BoxDrawings frame) -> void
+    {frame_ = frame;}
+
+    auto Window::set_title(
+        const string &title,
+        TitleLocation titlelocation =TitleLocation::TITLE_LOCATION_LEFT) -> void
+    {
+        title_ = title;
+        titlelocation_ = titlelocation;
+    }
+
+    auto Window::draw_title() -> void const
+    {
+        if (title_!="") {
+            res_attr_mode();
+            set_color(fcolortitle_);
+            set_color(bcolortitle_);
+
+            if (titleattr_!="") cout << titleattr_;
+
+            int titlesize = count_utf8_characters(title_);
+            if (titlelocation_==TitleLocation::TITLE_LOCATION_LEFT)
+                cursor_move(starty_, startx_+4);
+            if (titlelocation_==TitleLocation::TITLE_LOCATION_RIGHT)
+                cursor_move(starty_, (startx_+width_-1)-3-titlesize);
+            if (titlelocation_==TitleLocation::TITLE_LOCATION_CENTRAL)
+                cursor_move(starty_, startx_+width_/2-titlesize/2-1);
+
+            cout << title_ << std::flush;
+        }
+    }
+
+    auto Window::wdraw() -> void const
+    {
+        res_attr_mode();
+        set_color(fcolorwin_);
+        set_color(bcolorwin_);
+
+        for (size_t i =0; i!=height_; ++i) {
+            for (size_t j =0; j!=width_; ++j) {
+                if (i==0 || i==height_-1) {
+                    cursor_move(starty_+i, startx_+j);
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_NOT)
+                        cout << ' ';
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT)
+                        cout << "\u2500";
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT_ROUND)
+                        cout << "\u2500";
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_HEAVY)
+                        cout << "\u2501";
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_DOUBLE_LIGHT)
+                        cout << "\u2550";
+                }
+                else if (j==0 || j==width_-1) {
+                    cursor_move(starty_+i, startx_+j);
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_NOT)
+                        cout << ' ';
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT)
+                        cout << "\u2502";
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT_ROUND)
+                        cout << "\u2502";
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_HEAVY)
+                        cout << "\u2503";
+                    if (frame_==BoxDrawings::BOX_DRAWINGS_DOUBLE_LIGHT)
+                        cout << "\u2551";
+                }
+                else {
+                    cursor_move(starty_+i, startx_+j);
+                    cout << ' ';
+                }
+            }
+        }
+
+        cursor_move(starty_, startx_);
+        if (frame_==BoxDrawings::BOX_DRAWINGS_NOT)
+            cout << ' ';
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT)
+            cout << "\u250C";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT_ROUND)
+            cout << "\u256D";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_HEAVY)
+            cout << "\u250F";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_DOUBLE_LIGHT)
+            cout << "\u2554";
+
+        cursor_move(starty_, startx_+width_-1);
+        if (frame_==BoxDrawings::BOX_DRAWINGS_NOT)
+            cout << ' ';
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT)
+            cout << "\u2510";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT_ROUND)
+            cout << "\u256E";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_HEAVY)
+            cout << "\u2513";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_DOUBLE_LIGHT)
+            cout << "\u2557";
+
+        cursor_move(starty_+height_-1, startx_+width_-1);
+        if (frame_==BoxDrawings::BOX_DRAWINGS_NOT)
+            cout << ' ';
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT)
+            cout << "\u2518";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT_ROUND)
+            cout << "\u256F";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_HEAVY)
+            cout << "\u251B";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_DOUBLE_LIGHT)
+            cout << "\u255D";
+
+        cursor_move(starty_+height_-1, startx_);
+        if (frame_==BoxDrawings::BOX_DRAWINGS_NOT)
+            cout << ' ';
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT)
+            cout << "\u2514";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_LIGHT_ROUND)
+            cout << "\u2570";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_SINGLE_HEAVY)
+            cout << "\u2517";
+        if (frame_==BoxDrawings::BOX_DRAWINGS_DOUBLE_LIGHT)
+            cout << "\u255A";
+
+        cout << std::flush;
+        draw_title();
+    }
+
+    auto Window::wclose() -> void const
+    {
+        res_attr_mode();
+    }
+
+    auto Window::wout(const string &stext) -> void const
+    {
+        res_attr_mode();
+        set_color(fcolortext_);
+        set_color(bcolortext_);
+
+        int y = starty_+1;
+        int x = startx_+2;
+
+        if (textcount_!=textcountmax_) {
+            cursor_move(y+textcount_++, x);
+            cout << stext << std::flush;
+        }
+    }
+
+}
+
+#endif
