@@ -161,7 +161,7 @@ namespace pl {
 
     auto Window::set_title(
         const string &title,
-        TitleLocation titlelocation =TitleLocation::LEFT)
+        TitleLocation titlelocation =TitleLocation::WINDOW_TITLE_LEFT)
         -> void
     {
         title_ = title;
