@@ -1,0 +1,253 @@
+/*
+ * Copyright (C) 2025, S-Patriarch
+ * Patriarch library : pl::Bar
+ *
+ * set_yx() - установка начальных координат
+ * set_width() - установка ширины индикатора
+ * set_min() - установка минимальной границы итерации
+ * set_max() - установка максимальной границы итерации
+ * set_brackets() - установка границ индикатора
+ * set_color_block() - установка атрибутов цвета блока и его фона
+ * set_color_backing() - установка атрибутов цвета подложки и ее фона
+ * set_bar() - установка типа отрисовки индикатора
+ * set_block_backing() - установка блока и подложки
+ * get_min() - возврат минимальной границы итерации
+ * get_max() - возврат максимальной границы итерации
+ * update() - обновление отрисовки индикатора выполнения
+ */
+
+#ifndef PL_BAR
+#define PL_BAR 1
+
+#include <iostream>
+#include <cstddef>
+#include <string>
+
+#ifndef PL_CONIO
+#include "pl.conio"
+#endif
+
+namespace pl {
+
+    using std::cout;
+    using std::endl;
+    using std::string;
+    using std::size_t;
+
+    using CA = pl::Conio::Attributes;
+
+    class Bar : public Conio {
+    public:
+        enum BarDrawings {
+            BAR_PROGRESS_BAR
+        };
+
+        enum BarBlock {
+            BAR_BLOCK_LATTICE,                        // '#'
+            BAR_BLOCK_STAR,                           // '*'
+            BAR_BLOCK_EQUALS,                         // '='
+            BAR_BLOCK_HEAVY_HORIZONTAL,               // \u2501
+            BAR_BLOCK_DOUBLE_HORIZONTAL,              // \u2550
+            BAR_BLOCK_LOWER_ONE_EIGHTH_BLOCK,         // \u2581
+            BAR_BLOCK_LOWER_ONE_QUARTER_BLOCK,        // \u2582
+            BAR_BLOCK_LOWER_THREE_EIGHTHS_BLOCK,      // \u2583
+            BAR_BLOCK_LOWER_HALF_BLOCK,               // \u2584
+            BAR_BLOCK_LOWER_FIVE_EIGHTHS_BLOCK,       // \u2585
+            BAR_BLOCK_LOWER_THREE_QUARTER_BLOCK,      // \u2586
+            BAR_BLOCK_FULL_BLOCK                      // \u2588
+        };
+
+        enum BarBacking {
+            BAR_BACKING_SPACE,                        // ' '
+            BAR_BACKING_POINT,                        // '.'
+            BAR_BACKING_MINUS,                        // '-'
+            BAR_BACKING_HEAVY_HORIZONTAL,             // \u2501
+            BAR_BACKING_DOUBLE_HORIZONTAL,            // \u2550
+            BAR_BACKING_HEAVY_TRIPLE_DASH_HORIZONTAL, // \u2505
+            BAR_BACKING_HEAVY_DOUBLE_DASH_HORIZONTAL, // \u254D
+            BAR_BACKING_LOWER_ONE_EIGHTH_BLOCK,       // \u2581
+            BAR_BACKING_LOWER_ONE_QUARTER_BLOCK,      // \u2582
+            BAR_BACKING_LOWER_THREE_EIGHTHS_BLOCK,    // \u2583
+            BAR_BACKING_LOWER_HALF_BLOCK,             // \u2584
+            BAR_BACKING_LOWER_FIVE_EIGHTHS_BLOCK,     // \u2585
+            BAR_BACKING_LOWER_THREE_QUARTER_BLOCK,    // \u2586
+            BAR_BACKING_FULL_BLOCK,                   // \u2588
+            BAR_BACKING_LIGHT_SHADE                   // \u2591
+        };
+
+        Bar() =default;
+        virtual ~Bar() noexcept =default;
+
+        auto set_yx(int, int) -> void;
+        auto set_width(int) -> void;
+        auto set_min(int) -> void;
+        auto set_max(int) -> void;
+        auto set_brackets(const string &, const string &, CA, CA) -> void;
+        auto set_color_block(CA, CA) -> void;
+        auto set_color_backing(CA, CA) -> void;
+        auto set_bar(BarDrawings) -> void;
+        auto set_block_backing(BarBlock, BarBacking) -> void;
+
+        auto get_min() -> int const;
+        auto get_max() -> int const;
+
+        auto update(int) -> void const;
+
+    private:
+        int starty_ {-1};                  // координата y
+        int startx_ {-1};                  // координата x
+        int width_  {30};                  // ширина индикатора
+
+        int miniterations_ {0};            // минимальная итерация
+        int maxiterations_ {100};          // минимальная итерация
+
+        string bracketleft_  {""};         // левая граница индикатора
+        string bracketrigth_ {""};         // правая граница индикатора
+
+        CA fcolorblock_   {CA::F_DEFAULT}; // цвет блока
+        CA bcolorblock_   {CA::B_DEFAULT}; // цвет фона блока
+        CA fcolorbacking_ {CA::F_DEFAULT}; // цвет подложки индикатора
+        CA bcolorbacking_ {CA::B_DEFAULT}; // цвет фона подложки индикатора
+        CA fcolorbracket_ {CA::F_DEFAULT}; // цвет границы индикатора
+        CA bcolorbracket_ {CA::B_DEFAULT}; // цвет фона границы индикатора
+
+        BarDrawings bar_ {BarDrawings::BAR_PROGRESS_BAR};
+
+        BarBlock block_ {BarBlock::BAR_BLOCK_FULL_BLOCK};
+        BarBacking backing_ {BarBacking::BAR_BACKING_LIGHT_SHADE};
+    };
+
+    /*
+     * Реализация методов класса pl::Bar
+     */
+
+    auto Bar::set_yx(int y =-1, int x =-1) -> void
+    {
+        starty_ = y;
+        startx_ = x;
+    }
+
+    auto Bar::set_width(int width =30) -> void
+    {width_ = width;}
+
+    auto Bar::set_min(int min =0) -> void
+    {miniterations_ = min;}
+
+    auto Bar::set_max(int max =100) -> void
+    {maxiterations_ = max;}
+
+    auto Bar::set_brackets(
+        const string &bracketleft ="",
+        const string &bracketrigth ="",
+        CA fcolorbracket =CA::F_DEFAULT,
+        CA bcolorbracket =CA::B_DEFAULT)
+        -> void
+    {
+        bracketleft_   = bracketleft;
+        bracketrigth_  = bracketrigth;
+        fcolorbracket_ = fcolorbracket;
+        bcolorbracket_ = bcolorbracket;
+    }
+
+    auto Bar::set_color_block(
+        CA fcolorblock =CA::F_DEFAULT,
+        CA bcolorblock =CA::B_DEFAULT)
+        -> void
+    {
+        fcolorblock_ = fcolorblock;
+        bcolorblock_ = bcolorblock;
+    }
+
+    auto Bar::set_color_backing(
+        CA fcolorbacking =CA::F_DEFAULT,
+        CA bcolorbacking =CA::B_DEFAULT)
+        -> void
+    {
+        fcolorbacking_ = fcolorbacking;
+        bcolorbacking_ = bcolorbacking;
+    }
+
+    auto Bar::set_bar(BarDrawings bar =BarDrawings::BAR_PROGRESS_BAR) -> void
+    {bar_ = bar;}
+
+    auto Bar::set_block_backing(BarBlock block, BarBacking backing) -> void
+    {
+        block_ = block;
+        backing_ = backing;
+    }
+
+    auto Bar::get_min() -> int const
+    {return miniterations_;}
+
+    auto Bar::get_max() -> int const
+    {return maxiterations_;}
+
+    auto Bar::update(int index) -> void const
+    {
+        if (bar_==BarDrawings::BAR_PROGRESS_BAR) {
+            // вычисляем процент выполнения
+            float progress = static_cast<float>(index) / maxiterations_;
+            int completedwidth = static_cast<int>(progress * width_);
+
+            if (starty_>=0 && startx_>=0)
+                cursor_move(starty_, startx_);
+
+            set_color(fcolorbracket_);
+            set_color(bcolorbracket_);
+            cout << bracketleft_;
+
+            for (size_t i{0}; i<=width_; ++i) {
+                if (i <= completedwidth) {
+                    set_color(fcolorblock_);
+                    set_color(bcolorblock_);
+                    if (block_==BarBlock::BAR_BLOCK_LATTICE) cout << "#";
+                    if (block_==BarBlock::BAR_BLOCK_STAR) cout << "*";
+                    if (block_==BarBlock::BAR_BLOCK_EQUALS) cout << "=";
+                    if (block_==BarBlock::BAR_BLOCK_HEAVY_HORIZONTAL) cout << "\u2501";
+                    if (block_==BarBlock::BAR_BLOCK_DOUBLE_HORIZONTAL) cout << "\u2550";
+                    if (block_==BarBlock::BAR_BLOCK_LOWER_ONE_EIGHTH_BLOCK) cout << "\u2581";
+                    if (block_==BarBlock::BAR_BLOCK_LOWER_ONE_QUARTER_BLOCK) cout << "\u2582";
+                    if (block_==BarBlock::BAR_BLOCK_LOWER_THREE_EIGHTHS_BLOCK) cout << "\u2583";
+                    if (block_==BarBlock::BAR_BLOCK_LOWER_HALF_BLOCK) cout << "\u2584";
+                    if (block_==BarBlock::BAR_BLOCK_LOWER_FIVE_EIGHTHS_BLOCK) cout << "\u2585";
+                    if (block_==BarBlock::BAR_BLOCK_LOWER_THREE_QUARTER_BLOCK) cout << "\u2586";
+                    if (block_==BarBlock::BAR_BLOCK_FULL_BLOCK) cout << "\u2588";
+                }
+                else {
+                    set_color(fcolorbacking_);
+                    set_color(bcolorbacking_);
+                    if (backing_==BarBacking::BAR_BACKING_SPACE) cout << " ";
+                    if (backing_==BarBacking::BAR_BACKING_POINT) cout << ".";
+                    if (backing_==BarBacking::BAR_BACKING_MINUS) cout << "-";
+                    if (backing_==BarBacking::BAR_BACKING_HEAVY_HORIZONTAL) cout << "\u2501";
+                    if (backing_==BarBacking::BAR_BACKING_DOUBLE_HORIZONTAL) cout << "\u2550";
+                    if (backing_==BarBacking::BAR_BACKING_HEAVY_TRIPLE_DASH_HORIZONTAL) cout << "\u2505";
+                    if (backing_==BarBacking::BAR_BACKING_HEAVY_DOUBLE_DASH_HORIZONTAL) cout << "\u254D";
+                    if (backing_==BarBacking::BAR_BACKING_LOWER_ONE_EIGHTH_BLOCK) cout << "\u2581";
+                    if (backing_==BarBacking::BAR_BACKING_LOWER_ONE_QUARTER_BLOCK) cout << "\u2582";
+                    if (backing_==BarBacking::BAR_BACKING_LOWER_THREE_EIGHTHS_BLOCK) cout << "\u2583";
+                    if (backing_==BarBacking::BAR_BACKING_LOWER_HALF_BLOCK) cout << "\u2584";
+                    if (backing_==BarBacking::BAR_BACKING_LOWER_FIVE_EIGHTHS_BLOCK) cout << "\u2585";
+                    if (backing_==BarBacking::BAR_BACKING_LOWER_THREE_QUARTER_BLOCK) cout << "\u2586";
+                    if (backing_==BarBacking::BAR_BACKING_FULL_BLOCK) cout << "\u2588";
+                    if (backing_==BarBacking::BAR_BACKING_LIGHT_SHADE) cout << "\u2591";
+                }
+                cout.flush();
+            }
+
+            set_color(fcolorbracket_);
+            set_color(bcolorbracket_);
+            cout << bracketrigth_;
+
+            if (starty_>=0 && startx_>=0)
+                cursor_move(starty_, startx_);
+            else
+                cout << "\r";
+
+            cout.flush();
+        }
+    }
+
+}
+
+#endif

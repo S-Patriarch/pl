@@ -41,17 +41,17 @@ namespace pl {
     class Window : public Conio, public String {
     public:
         enum BoxDrawings {
-            NOT,                // пустая рамка
-            SINGLE_LIGHT,       // одинарная тонкая рамка
-            SINGLE_LIGHT_ROUND, // одинарная тонкая рамка с круглыми углами
-            SINGLE_HEAVY,       // одинарная толстая рамка
-            DOUBLE_LIGHT        // двойная тонкая рамка
+            WINDOW_BOX_NOT,                // пустая рамка
+            WINDOW_BOX_SINGLE_LIGHT,       // одинарная тонкая рамка
+            WINDOW_BOX_SINGLE_LIGHT_ROUND, // одинарная тонкая рамка с круглыми углами
+            WINDOW_BOX_SINGLE_HEAVY,       // одинарная толстая рамка
+            WINDOW_BOX_DOUBLE_LIGHT        // двойная тонкая рамка
         };
 
         enum TitleLocation {
-            LEFT,               // отрисовка заголовка в левой части окна
-            CENTRAL,            // отрисовка заголовка по центру окна
-            RIGHT               // отрисовка заголовка в правой части окна
+            WINDOW_TITLE_LEFT,             // отрисовка заголовка в левой части окна
+            WINDOW_TITLE_CENTRAL,          // отрисовка заголовка по центру окна
+            WINDOW_TITLE_RIGHT             // отрисовка заголовка в правой части окна
         };
 
         Window(int, int, int, int, size_t);
@@ -122,7 +122,7 @@ namespace pl {
             startx_ = col/2-width_/2-1;
         }
 
-        frame_ = BoxDrawings::SINGLE_LIGHT;
+        frame_ = BoxDrawings::WINDOW_BOX_SINGLE_LIGHT;
         textcountmax_ = height_-2;
 
         matrix_.resize(height_+1, vector<int>(width_+1, 0));
@@ -178,11 +178,11 @@ namespace pl {
             if (titleattr_!="") cout << titleattr_;
 
             int titlesize = count_utf8_characters(title_);
-            if (titlelocation_==TitleLocation::LEFT)
+            if (titlelocation_==TitleLocation::WINDOW_TITLE_LEFT)
                 cursor_move(starty_, startx_+4);
-            if (titlelocation_==TitleLocation::RIGHT)
+            if (titlelocation_==TitleLocation::WINDOW_TITLE_RIGHT)
                 cursor_move(starty_, (startx_+width_-1)-3-titlesize);
-            if (titlelocation_==TitleLocation::CENTRAL)
+            if (titlelocation_==TitleLocation::WINDOW_TITLE_CENTRAL)
                 cursor_move(starty_, startx_+width_/2-titlesize/2-1);
 
             cout << title_ << std::flush;
@@ -199,28 +199,28 @@ namespace pl {
             for (size_t j =0; j!=width_; ++j) {
                 if (i==0 || i==height_-1) {
                     cursor_move(starty_+i, startx_+j);
-                    if (frame_==BoxDrawings::NOT)
+                    if (frame_==BoxDrawings::WINDOW_BOX_NOT)
                         cout << ' ';
-                    if (frame_==BoxDrawings::SINGLE_LIGHT)
+                    if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT)
                         cout << "\u2500";
-                    if (frame_==BoxDrawings::SINGLE_LIGHT_ROUND)
+                    if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT_ROUND)
                         cout << "\u2500";
-                    if (frame_==BoxDrawings::SINGLE_HEAVY)
+                    if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_HEAVY)
                         cout << "\u2501";
-                    if (frame_==BoxDrawings::DOUBLE_LIGHT)
+                    if (frame_==BoxDrawings::WINDOW_BOX_DOUBLE_LIGHT)
                         cout << "\u2550";
                 }
                 else if (j==0 || j==width_-1) {
                     cursor_move(starty_+i, startx_+j);
-                    if (frame_==BoxDrawings::NOT)
+                    if (frame_==BoxDrawings::WINDOW_BOX_NOT)
                         cout << ' ';
-                    if (frame_==BoxDrawings::SINGLE_LIGHT)
+                    if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT)
                         cout << "\u2502";
-                    if (frame_==BoxDrawings::SINGLE_LIGHT_ROUND)
+                    if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT_ROUND)
                         cout << "\u2502";
-                    if (frame_==BoxDrawings::SINGLE_HEAVY)
+                    if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_HEAVY)
                         cout << "\u2503";
-                    if (frame_==BoxDrawings::DOUBLE_LIGHT)
+                    if (frame_==BoxDrawings::WINDOW_BOX_DOUBLE_LIGHT)
                         cout << "\u2551";
                 }
                 else {
@@ -231,51 +231,51 @@ namespace pl {
         }
 
         cursor_move(starty_, startx_);
-        if (frame_==BoxDrawings::NOT)
+        if (frame_==BoxDrawings::WINDOW_BOX_NOT)
             cout << ' ';
-        if (frame_==BoxDrawings::SINGLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT)
             cout << "\u250C";
-        if (frame_==BoxDrawings::SINGLE_LIGHT_ROUND)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT_ROUND)
             cout << "\u256D";
-        if (frame_==BoxDrawings::SINGLE_HEAVY)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_HEAVY)
             cout << "\u250F";
-        if (frame_==BoxDrawings::DOUBLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_DOUBLE_LIGHT)
             cout << "\u2554";
 
         cursor_move(starty_, startx_+width_-1);
-        if (frame_==BoxDrawings::NOT)
+        if (frame_==BoxDrawings::WINDOW_BOX_NOT)
             cout << ' ';
-        if (frame_==BoxDrawings::SINGLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT)
             cout << "\u2510";
-        if (frame_==BoxDrawings::SINGLE_LIGHT_ROUND)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT_ROUND)
             cout << "\u256E";
-        if (frame_==BoxDrawings::SINGLE_HEAVY)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_HEAVY)
             cout << "\u2513";
-        if (frame_==BoxDrawings::DOUBLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_DOUBLE_LIGHT)
             cout << "\u2557";
 
         cursor_move(starty_+height_-1, startx_+width_-1);
-        if (frame_==BoxDrawings::NOT)
+        if (frame_==BoxDrawings::WINDOW_BOX_NOT)
             cout << ' ';
-        if (frame_==BoxDrawings::SINGLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT)
             cout << "\u2518";
-        if (frame_==BoxDrawings::SINGLE_LIGHT_ROUND)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT_ROUND)
             cout << "\u256F";
-        if (frame_==BoxDrawings::SINGLE_HEAVY)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_HEAVY)
             cout << "\u251B";
-        if (frame_==BoxDrawings::DOUBLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_DOUBLE_LIGHT)
             cout << "\u255D";
 
         cursor_move(starty_+height_-1, startx_);
-        if (frame_==BoxDrawings::NOT)
+        if (frame_==BoxDrawings::WINDOW_BOX_NOT)
             cout << ' ';
-        if (frame_==BoxDrawings::SINGLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT)
             cout << "\u2514";
-        if (frame_==BoxDrawings::SINGLE_LIGHT_ROUND)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_LIGHT_ROUND)
             cout << "\u2570";
-        if (frame_==BoxDrawings::SINGLE_HEAVY)
+        if (frame_==BoxDrawings::WINDOW_BOX_SINGLE_HEAVY)
             cout << "\u2517";
-        if (frame_==BoxDrawings::DOUBLE_LIGHT)
+        if (frame_==BoxDrawings::WINDOW_BOX_DOUBLE_LIGHT)
             cout << "\u255A";
 
         cout << std::flush;

@@ -30,14 +30,14 @@ namespace pl {
     class Line : public Conio {
     public:
         enum LineDrawings {
-            SINGLE_LIGHT,   // одинарная тонкая линия
-            SINGLE_HEAVY,   // одинарная толстая линия
-            DOUBLE_LIGHT    // двойная тонкая диния
+            LINE_SINGLE_LIGHT,   // одинарная тонкая линия
+            LINE_SINGLE_HEAVY,   // одинарная толстая линия
+            LINE_DOUBLE_LIGHT    // двойная тонкая диния
         };
 
         enum LineDirection {
-            HORIZONTAL,     // отрисовка горизонтальной линии
-            VERTICAL        // отрисовка вертикальной линии
+            LINE_HORIZONTAL,     // отрисовка горизонтальной линии
+            LINE_VERTICAL        // отрисовка вертикальной линии
         };
 
         Line(int, int, int, LineDrawings, LineDirection);
@@ -67,8 +67,8 @@ namespace pl {
      */
 
     Line::Line(int y =0, int x =0, int length =1,
-        LineDrawings line =LineDrawings::SINGLE_LIGHT,
-        LineDirection direction =LineDirection::HORIZONTAL)
+        LineDrawings line =LineDrawings::LINE_SINGLE_LIGHT,
+        LineDirection direction =LineDirection::LINE_HORIZONTAL)
         : starty_{y}, startx_{x}, length_{length},
         line_{line}, direction_{direction}
     {}
@@ -99,25 +99,25 @@ namespace pl {
         set_color(fcolorline_);
         set_color(bcolorline_);
 
-        if (direction_==LineDirection::HORIZONTAL) {
+        if (direction_==LineDirection::LINE_HORIZONTAL) {
             for (size_t i =0; i!=length_; ++i) {
                 cursor_move(starty_, startx_+i);
-                if (line_==LineDrawings::SINGLE_LIGHT)
+                if (line_==LineDrawings::LINE_SINGLE_LIGHT)
                     cout << "\u2500";
-                if (line_==LineDrawings::SINGLE_HEAVY)
+                if (line_==LineDrawings::LINE_SINGLE_HEAVY)
                     cout << "\u2501";
-                if (line_==LineDrawings::DOUBLE_LIGHT)
+                if (line_==LineDrawings::LINE_DOUBLE_LIGHT)
                     cout << "\u2550";
             }
         }
-        if (direction_==LineDirection::VERTICAL) {
+        if (direction_==LineDirection::LINE_VERTICAL) {
             for (size_t i =0; i!=length_; ++i) {
                 cursor_move(starty_+i, startx_);
-                if (line_==LineDrawings::SINGLE_LIGHT)
+                if (line_==LineDrawings::LINE_SINGLE_LIGHT)
                     cout << "\u2502";
-                if (line_==LineDrawings::SINGLE_HEAVY)
+                if (line_==LineDrawings::LINE_SINGLE_HEAVY)
                     cout << "\u2503";
-                if (line_==LineDrawings::DOUBLE_LIGHT)
+                if (line_==LineDrawings::LINE_DOUBLE_LIGHT)
                     cout << "\u2551";
             }
         }
