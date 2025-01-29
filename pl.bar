@@ -48,6 +48,7 @@ namespace pl {
             BAR_BLOCK_EQUALS,                         // '='
             BAR_BLOCK_HEAVY_HORIZONTAL,               // \u2501
             BAR_BLOCK_DOUBLE_HORIZONTAL,              // \u2550
+            BAR_BLOCK_UPPER_HALF_BLOCK,               // \u2580
             BAR_BLOCK_LOWER_ONE_EIGHTH_BLOCK,         // \u2581
             BAR_BLOCK_LOWER_ONE_QUARTER_BLOCK,        // \u2582
             BAR_BLOCK_LOWER_THREE_EIGHTHS_BLOCK,      // \u2583
@@ -65,6 +66,7 @@ namespace pl {
             BAR_BACKING_DOUBLE_HORIZONTAL,            // \u2550
             BAR_BACKING_HEAVY_TRIPLE_DASH_HORIZONTAL, // \u2505
             BAR_BACKING_HEAVY_DOUBLE_DASH_HORIZONTAL, // \u254D
+            BAR_BACKING_UPPER_HALF_BLOCK,             // \u2580
             BAR_BACKING_LOWER_ONE_EIGHTH_BLOCK,       // \u2581
             BAR_BACKING_LOWER_ONE_QUARTER_BLOCK,      // \u2582
             BAR_BACKING_LOWER_THREE_EIGHTHS_BLOCK,    // \u2583
@@ -205,6 +207,7 @@ namespace pl {
                     if (block_==BarBlock::BAR_BLOCK_EQUALS) cout << "=";
                     if (block_==BarBlock::BAR_BLOCK_HEAVY_HORIZONTAL) cout << "\u2501";
                     if (block_==BarBlock::BAR_BLOCK_DOUBLE_HORIZONTAL) cout << "\u2550";
+                    if (block_==BarBlock::BAR_BLOCK_UPPER_HALF_BLOCK) cout << "\u2580";
                     if (block_==BarBlock::BAR_BLOCK_LOWER_ONE_EIGHTH_BLOCK) cout << "\u2581";
                     if (block_==BarBlock::BAR_BLOCK_LOWER_ONE_QUARTER_BLOCK) cout << "\u2582";
                     if (block_==BarBlock::BAR_BLOCK_LOWER_THREE_EIGHTHS_BLOCK) cout << "\u2583";
@@ -223,6 +226,7 @@ namespace pl {
                     if (backing_==BarBacking::BAR_BACKING_DOUBLE_HORIZONTAL) cout << "\u2550";
                     if (backing_==BarBacking::BAR_BACKING_HEAVY_TRIPLE_DASH_HORIZONTAL) cout << "\u2505";
                     if (backing_==BarBacking::BAR_BACKING_HEAVY_DOUBLE_DASH_HORIZONTAL) cout << "\u254D";
+                    if (backing_==BarBacking::BAR_BACKING_UPPER_HALF_BLOCK) cout << "\u2580";
                     if (backing_==BarBacking::BAR_BACKING_LOWER_ONE_EIGHTH_BLOCK) cout << "\u2581";
                     if (backing_==BarBacking::BAR_BACKING_LOWER_ONE_QUARTER_BLOCK) cout << "\u2582";
                     if (backing_==BarBacking::BAR_BACKING_LOWER_THREE_EIGHTHS_BLOCK) cout << "\u2583";
