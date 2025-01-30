@@ -11,6 +11,8 @@
  * set_color_backing() - установка атрибутов цвета подложки и ее фона
  * set_bar() - установка типа отрисовки индикатора
  * set_block_backing() - установка блока и подложки
+ * set_counter() -
+ * set_message() - установка сообщения индикатора
  * get_min() - возврат минимальной границы итерации
  * get_max() - возврат максимальной границы итерации
  * update() - обновление отрисовки индикатора выполнения
@@ -89,6 +91,8 @@ namespace pl {
         auto set_color_backing(CA, CA) -> void;
         auto set_bar(BarDrawings) -> void;
         auto set_block_backing(BarBlock, BarBacking) -> void;
+        auto set_counter(int, int, const string &, CA, CA, CA) -> void;
+        auto set_message(int, int, const string &, CA, CA, CA) -> void;
 
         auto get_min() -> int const;
         auto get_max() -> int const;
@@ -103,8 +107,15 @@ namespace pl {
         int miniterations_ {0};            // минимальная итерация
         int maxiterations_ {100};          // минимальная итерация
 
+        int countery_ {-1};
+        int counterx_ {-1};
+        int messagey_ {-1};                // координата y сообщения
+        int messagex_ {-1};                // координата x сообщения
+
         string bracketleft_  {""};         // левая граница индикатора
         string bracketrigth_ {""};         // правая граница индикатора
+        string counter_      {""};
+        string message_      {""};         // сообщение индикатора
 
         CA fcolorblock_   {CA::F_DEFAULT}; // цвет блока
         CA bcolorblock_   {CA::B_DEFAULT}; // цвет фона блока
@@ -112,6 +123,13 @@ namespace pl {
         CA bcolorbacking_ {CA::B_DEFAULT}; // цвет фона подложки индикатора
         CA fcolorbracket_ {CA::F_DEFAULT}; // цвет границы индикатора
         CA bcolorbracket_ {CA::B_DEFAULT}; // цвет фона границы индикатора
+        CA fcolorcounter_ {CA::F_DEFAULT};
+        CA bcolorcounter_ {CA::B_DEFAULT};
+        CA fcolormessage_ {CA::F_DEFAULT}; // цвет текста сообщения
+        CA bcolormessage_ {CA::B_DEFAULT}; // цвет фона сообщения
+
+        CA counterattr_ {CA::RESET};
+        CA messageattr_ {CA::RESET};
 
         BarDrawings bar_ {BarDrawings::BAR_PROGRESS_BAR};
 
@@ -178,6 +196,40 @@ namespace pl {
         backing_ = backing;
     }
 
+    auto Bar::set_counter(
+        int y =-1,
+        int x =-1,
+        const std::string &counter ="",
+        CA fcolorcounter =CA::F_DEFAULT,
+        CA bcolorcounter =CA::B_DEFAULT,
+        CA counterattr =CA::RESET)
+        -> void
+    {
+        countery_ = y;
+        counterx_ = x;
+        counter_  = counter;
+        fcolorcounter_ = fcolorcounter;
+        bcolorcounter_ = bcolorcounter;
+        counterattr_ = counterattr;
+    }
+
+    auto Bar::set_message(
+        int y =-1,
+        int x =-1,
+        const std::string &message ="",
+        CA fcolormessage =CA::F_DEFAULT,
+        CA bcolormessage =CA::B_DEFAULT,
+        CA messageattr =CA::RESET)
+        -> void
+    {
+        messagey_ = y;
+        messagex_ = x;
+        message_  = message;
+        fcolormessage_ = fcolormessage;
+        bcolormessage_ = bcolormessage;
+        messageattr_ = messageattr;
+    }
+
     auto Bar::get_min() -> int const
     {return miniterations_;}
 
@@ -194,12 +246,14 @@ namespace pl {
             if (starty_>=0 && startx_>=0)
                 cursor_move(starty_, startx_);
 
+            res_attr();
             set_color(fcolorbracket_);
             set_color(bcolorbracket_);
             cout << bracketleft_;
 
             for (size_t i{0}; i<=width_; ++i) {
                 if (i <= completedwidth) {
+                    res_attr();
                     set_color(fcolorblock_);
                     set_color(bcolorblock_);
                     if (block_==BarBlock::BAR_BLOCK_LATTICE) cout << "#";
@@ -217,6 +271,7 @@ namespace pl {
                     if (block_==BarBlock::BAR_BLOCK_FULL_BLOCK) cout << "\u2588";
                 }
                 else {
+                    res_attr();
                     set_color(fcolorbacking_);
                     set_color(bcolorbacking_);
                     if (backing_==BarBacking::BAR_BACKING_SPACE) cout << " ";
@@ -239,10 +294,36 @@ namespace pl {
                 cout.flush();
             }
 
+            res_attr();
             set_color(fcolorbracket_);
             set_color(bcolorbracket_);
             cout << bracketrigth_;
 
+            if (countery_>=0 && counterx_>=0 && counter_!="") {
+                res_attr();
+                set_color(fcolorcounter_);
+                set_color(bcolorcounter_);
+                if (counterattr_!=CA::RESET) {
+                    set_attr_mode(counterattr_);
+                }
+                cursor_move(countery_, counterx_);
+                cout
+                    << (size_t)(progress * 100.0)
+                    << counter_;
+            }
+
+            if (messagey_>=0 && messagex_>=0 && message_!="") {
+                res_attr();
+                set_color(fcolormessage_);
+                set_color(bcolormessage_);
+                if (messageattr_!=CA::RESET) {
+                    set_attr_mode(messageattr_);
+                }
+                cursor_move(messagey_, messagex_);
+                cout << message_;
+            }
+
+            res_attr();
             if (starty_>=0 && startx_>=0)
                 cursor_move(starty_, startx_);
             else
