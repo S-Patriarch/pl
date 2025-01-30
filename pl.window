@@ -171,7 +171,7 @@ namespace pl {
     auto Window::draw_title() -> void const
     {
         if (title_!="") {
-            res_attr_mode();
+            res_attr();
             set_color(fcolortitle_);
             set_color(bcolortitle_);
 
@@ -191,7 +191,7 @@ namespace pl {
 
     auto Window::wdraw() -> void const
     {
-        res_attr_mode();
+        res_attr();
         set_color(fcolorwin_);
         set_color(bcolorwin_);
 
@@ -284,12 +284,12 @@ namespace pl {
 
     auto Window::wclose() -> void const
     {
-        res_attr_mode();
+        res_attr();
     }
 
     auto Window::wout(const string &stext) -> void const
     {
-        res_attr_mode();
+        res_attr();
         set_color(fcolortext_);
         set_color(bcolortext_);
 

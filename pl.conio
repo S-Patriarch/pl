@@ -12,8 +12,9 @@
  * getch() - получение символа с клавиатуры без ожидания нажатия enter
  * getline() - считывание неформатированных данных из потока
  * getlinehidden() - скрытое считывание неформатированных данных из потока
- * set_attr_mode() - устанавка атрибутов
- * res_attr_mode() - сброс все атрибутов
+ * set_attr() - установка свободных атрибутов
+ * res_attr() - сброс всех атрибутов
+ * set_attr_mode() - устанавка атрибутов формата текста
  * set_color() - устанавка цвета переднего плана или фона
  * cursor_move() - устанавка текущей позиции курсора
  * cursor_up() - перемещение курсора вверх
@@ -145,8 +146,9 @@ namespace pl {
         auto getline(const int) -> string const;
         auto getlinehidden() -> string const;
 
+        auto set_attr(const string &) -> void const;
+        auto res_attr() -> void const;
         auto set_attr_mode(Attributes) -> void const;
-        auto res_attr_mode() -> void const;
 
         auto set_color(Attributes, int) -> void;
 
@@ -283,6 +285,20 @@ namespace pl {
         return s_res;
      }
 
+    auto Conio::set_attr(const string &attr) -> void const
+        // устанавливает свободныe атрибуты
+    {cout << attr;}
+
+    auto Conio::res_attr() -> void const
+        // сбрасывает все атрибуты
+    {
+        cout
+            << ESC
+            << "["
+            << Attributes::RESET
+            << "m";
+    }
+
     auto Conio::set_attr_mode(Attributes attr) -> void const
         // устанавливает атрибуты
     {
@@ -290,16 +306,6 @@ namespace pl {
             << ESC
             << "["
             << attr
-            << "m";
-    }
-
-    auto Conio::res_attr_mode() -> void const
-        // сбрасывает все атрибуты
-    {
-        cout
-            << ESC
-            << "["
-            << Attributes::RESET
             << "m";
     }
 
