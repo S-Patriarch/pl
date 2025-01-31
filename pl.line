@@ -96,6 +96,7 @@ namespace pl {
 
     auto Line::ldraw() -> void const
     {
+        res_attr();
         set_color(fcolorline_);
         set_color(bcolorline_);
 
