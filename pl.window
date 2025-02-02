@@ -18,7 +18,6 @@
 #include <iostream>
 #include <cstddef>
 #include <string>
-#include <vector>
 
 #ifndef PL_CONIO
 #include "pl.conio"
@@ -34,7 +33,6 @@ namespace pl {
     using std::endl;
     using std::size_t;
     using std::string;
-    using std::vector;
 
     using CA = pl::Conio::Attributes;
 
@@ -54,7 +52,7 @@ namespace pl {
             WINDOW_TITLE_RIGHT             // отрисовка заголовка в правой части окна
         };
 
-        Window(int, int, int, int, size_t);
+        Window(int, int, int, int);
         virtual ~Window() noexcept =default;
 
         auto set_color_window(CA, CA) -> void;
@@ -73,8 +71,6 @@ namespace pl {
         int height_;                     // высота окна
         int width_;                      // ширина окна
 
-        size_t shadow_;                  // отрисовка тени окна
-
         string title_ {};                // заголовок окна
         string titleattr_ {};            // свободный атрибут заголовка окна
         string textattr_ {};             // свободный атрибут текста окна
@@ -92,12 +88,7 @@ namespace pl {
         int textcount_ {};
         int textcountmax_ {};
 
-        vector<vector<int>> matrix_;     // матрица области под окном
-
         auto draw_title() -> void const;
-        //auto draw_shadow() -> void const;
-        //auto matrix_save() -> void const;
-        //auto matrix_restore() -> void const;
     };
 
     /*
@@ -108,13 +99,9 @@ namespace pl {
         int rows,
         int cols,
         int y =-1,
-        int x =-1,
-        size_t shadow =0)
+        int x =-1)
         : starty_{y}, startx_{x}, height_{rows}, width_{cols}
     {
-        if (shadow == 0) shadow_ = 0;
-        else shadow_ = 1;
-
         if (y<0 || x<0) {
             int row = getwsrow();
             int col = getwscol();
@@ -124,8 +111,6 @@ namespace pl {
 
         frame_ = BoxDrawings::WINDOW_BOX_SINGLE_LIGHT;
         textcountmax_ = height_-2;
-
-        matrix_.resize(height_+1, vector<int>(width_+1, 0));
     }
 
     auto Window::set_color_window(CA fcolor, CA bcolor) -> void
