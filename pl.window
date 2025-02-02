@@ -3,6 +3,7 @@
  * Patriarch library : pl::Window
  *
  * set_color_window() - установка атрибутов цвета окна
+ * set_color_window_256() - установка атрибутов цвета окна
  * set_color_title() - установка атрибутов цвета заголовка окна
  * set_color_text() - установка атрибутов цвета текста окна
  * set_frame() - установка рамки окна
@@ -56,6 +57,7 @@ namespace pl {
         virtual ~Window() noexcept =default;
 
         auto set_color_window(CA, CA) -> void;
+        auto set_color_window_256(int, int) -> void;
         auto set_color_title(CA, CA, const string &) -> void;
         auto set_color_text(CA, CA, const string &) -> void;
         auto set_frame(BoxDrawings) -> void;
@@ -74,6 +76,9 @@ namespace pl {
         string title_ {};                // заголовок окна
         string titleattr_ {};            // свободный атрибут заголовка окна
         string textattr_ {};             // свободный атрибут текста окна
+
+        string fcolor256_ {};
+        string bcolor256_ {};
 
         BoxDrawings   frame_;            // вид рамки окна
         TitleLocation titlelocation_;    // локация отрисовки заголовка окна
@@ -119,6 +124,12 @@ namespace pl {
         bcolorwin_ = bcolor;
     }
 
+    auto Window::set_color_window_256(int fcolor, int bcolor) -> void
+    {
+        fcolor256_ = "\033[38;5;"+std::to_string(fcolor)+"m";
+        bcolor256_ = "\033[48;5;"+std::to_string(bcolor)+"m";
+    }
+
     auto Window::set_color_title(
         CA fcolor =CA::F_DEFAULT,
         CA bcolor =CA::B_DEFAULT,
@@ -157,8 +168,14 @@ namespace pl {
     {
         if (title_!="") {
             res_attr();
-            set_color(fcolortitle_);
-            set_color(bcolortitle_);
+            if (fcolor256_!="" && bcolor256_!="") {
+                set_attr(fcolor256_);
+                set_attr(bcolor256_);
+            }
+            else {
+                set_color(fcolortitle_);
+                set_color(bcolortitle_);
+            }
 
             if (titleattr_!="") cout << titleattr_;
 
@@ -177,8 +194,14 @@ namespace pl {
     auto Window::wdraw() -> void const
     {
         res_attr();
-        set_color(fcolorwin_);
-        set_color(bcolorwin_);
+        if (fcolor256_!="" && bcolor256_!="") {
+            set_attr(fcolor256_);
+            set_attr(bcolor256_);
+        }
+        else {
+            set_color(fcolorwin_);
+            set_color(bcolorwin_);
+        }
 
         for (size_t i =0; i!=height_; ++i) {
             for (size_t j =0; j!=width_; ++j) {
@@ -275,8 +298,14 @@ namespace pl {
     auto Window::wout(const string &stext) -> void const
     {
         res_attr();
-        set_color(fcolortext_);
-        set_color(bcolortext_);
+        if (fcolor256_!="" && bcolor256_!="") {
+            set_attr(fcolor256_);
+            set_attr(bcolor256_);
+        }
+        else {
+            set_color(fcolortext_);
+            set_color(bcolortext_);
+        }
 
         int y = starty_+1;
         int x = startx_+2;
