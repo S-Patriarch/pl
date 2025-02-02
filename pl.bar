@@ -240,7 +240,7 @@ namespace pl {
     {
         if (bar_==BarDrawings::BAR_PROGRESS_BAR) {
             // вычисляем процент выполнения
-            float progress = static_cast<float>(index) / maxiterations_;
+            double progress = static_cast<double>(index) / maxiterations_;
             int completedwidth = static_cast<int>(progress * width_);
 
             if (starty_>=0 && startx_>=0)
