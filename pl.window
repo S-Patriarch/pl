@@ -47,10 +47,10 @@ namespace pl {
             WINDOW_BOX_DOUBLE_LIGHT        // двойная тонкая рамка
         };
 
-        enum TitleLocation {
-            WINDOW_TITLE_LEFT,             // отрисовка заголовка в левой части окна
-            WINDOW_TITLE_CENTRAL,          // отрисовка заголовка по центру окна
-            WINDOW_TITLE_RIGHT             // отрисовка заголовка в правой части окна
+        enum Location {
+            WINDOW_LOCATION_LEFT,
+            WINDOW_LOCATION_CENTRAL,
+            WINDOW_LOCATION_RIGHT
         };
 
         Window(int, int, int, int);
@@ -61,7 +61,7 @@ namespace pl {
         auto set_color_title(CA, CA, const string &) -> void;
         auto set_color_text(CA, CA, const string &) -> void;
         auto set_frame(BoxDrawings) -> void;
-        auto set_title(const string &, TitleLocation) -> void;
+        auto set_title(const string &, Location) -> void;
 
         auto wdraw() -> void const;
         auto wclose() -> void const;
@@ -80,8 +80,8 @@ namespace pl {
         string fcolor256_ {};
         string bcolor256_ {};
 
-        BoxDrawings   frame_;            // вид рамки окна
-        TitleLocation titlelocation_;    // локация отрисовки заголовка окна
+        BoxDrawings frame_;              // вид рамки окна
+        Location    titlelocation_;      // локация отрисовки заголовка окна
 
         CA fcolorwin_   {CA::F_DEFAULT}; // цвет рамки окна
         CA bcolorwin_   {CA::B_DEFAULT}; // цвет фона рамки окна
@@ -157,7 +157,7 @@ namespace pl {
 
     auto Window::set_title(
         const string &title,
-        TitleLocation titlelocation =TitleLocation::WINDOW_TITLE_LEFT)
+        Location titlelocation =Location::WINDOW_LOCATION_LEFT)
         -> void
     {
         title_ = title;
@@ -180,11 +180,11 @@ namespace pl {
             if (titleattr_!="") cout << titleattr_;
 
             int titlesize = count_utf8_characters(title_);
-            if (titlelocation_==TitleLocation::WINDOW_TITLE_LEFT)
+            if (titlelocation_==Location::WINDOW_LOCATION_LEFT)
                 cursor_move(starty_, startx_+4);
-            if (titlelocation_==TitleLocation::WINDOW_TITLE_RIGHT)
+            if (titlelocation_==Location::WINDOW_LOCATION_RIGHT)
                 cursor_move(starty_, (startx_+width_-1)-3-titlesize);
-            if (titlelocation_==TitleLocation::WINDOW_TITLE_CENTRAL)
+            if (titlelocation_==Location::WINDOW_LOCATION_CENTRAL)
                 cursor_move(starty_, startx_+width_/2-titlesize/2-1);
 
             cout << title_ << std::flush;
