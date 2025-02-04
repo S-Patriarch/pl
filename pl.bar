@@ -2,19 +2,19 @@
  * Copyright (C) 2025, S-Patriarch
  * Patriarch library : pl::Bar
  *
- * set_yx() - установка начальных координат
- * set_width() - установка ширины индикатора
- * set_min() - установка минимальной границы итерации
- * set_max() - установка максимальной границы итерации
- * set_brackets() - установка границ индикатора
- * set_color_block() - установка атрибутов цвета блока и его фона
- * set_color_backing() - установка атрибутов цвета подложки и ее фона
+ * set_bar_yx() - установка начальных координат
+ * set_bar_width() - установка ширины индикатора
+ * set_bar_min() - установка минимальной границы итерации
+ * set_bar_max() - установка максимальной границы итерации
+ * set_bar_brackets() - установка границ индикатора
+ * set_bar_color_block() - установка атрибутов цвета блока и его фона
+ * set_bar_color_backing() - установка атрибутов цвета подложки и ее фона
  * set_bar() - установка типа отрисовки индикатора
- * set_block_backing() - установка блока и подложки
- * set_counter() -
- * set_message() - установка сообщения индикатора
- * get_min() - возврат минимальной границы итерации
- * get_max() - возврат максимальной границы итерации
+ * set_bar_block_backing() - установка блока и подложки
+ * set_bar_counter() -
+ * set_bar_message() - установка сообщения индикатора
+ * get_bar_min() - возврат минимальной границы итерации
+ * get_bar_max() - возврат максимальной границы итерации
  * update() - обновление отрисовки индикатора выполнения
  */
 
@@ -82,20 +82,20 @@ namespace pl {
         Bar() =default;
         virtual ~Bar() noexcept =default;
 
-        auto set_yx(int, int) -> void;
-        auto set_width(int) -> void;
-        auto set_min(int) -> void;
-        auto set_max(int) -> void;
-        auto set_brackets(const string &, const string &, CA, CA) -> void;
-        auto set_color_block(CA, CA) -> void;
-        auto set_color_backing(CA, CA) -> void;
+        auto set_bar_yx(int, int) -> void;
+        auto set_bar_width(int) -> void;
+        auto set_bar_min(int) -> void;
+        auto set_bar_max(int) -> void;
+        auto set_bar_brackets(const string &, const string &, CA, CA) -> void;
+        auto set_bar_color_block(CA, CA) -> void;
+        auto set_bar_color_backing(CA, CA) -> void;
         auto set_bar(BarDrawings) -> void;
-        auto set_block_backing(BarBlock, BarBacking) -> void;
-        auto set_counter(int, int, const string &, CA, CA, CA) -> void;
-        auto set_message(int, int, const string &, CA, CA, CA) -> void;
+        auto set_bar_block_backing(BarBlock, BarBacking) -> void;
+        auto set_bar_counter(int, int, const string &, CA, CA, CA) -> void;
+        auto set_bar_message(int, int, const string &, CA, CA, CA) -> void;
 
-        auto get_min() -> int const;
-        auto get_max() -> int const;
+        auto get_bar_min() -> int const;
+        auto get_bar_max() -> int const;
 
         auto update(int) -> void const;
 
@@ -141,22 +141,22 @@ namespace pl {
      * Реализация методов класса pl::Bar
      */
 
-    auto Bar::set_yx(int y =-1, int x =-1) -> void
+    auto Bar::set_bar_yx(int y =-1, int x =-1) -> void
     {
         starty_ = y;
         startx_ = x;
     }
 
-    auto Bar::set_width(int width =30) -> void
+    auto Bar::set_bar_width(int width =30) -> void
     {width_ = width;}
 
-    auto Bar::set_min(int min =0) -> void
+    auto Bar::set_bar_min(int min =0) -> void
     {miniterations_ = min;}
 
-    auto Bar::set_max(int max =100) -> void
+    auto Bar::set_bar_max(int max =100) -> void
     {maxiterations_ = max;}
 
-    auto Bar::set_brackets(
+    auto Bar::set_bar_brackets(
         const string &bracketleft ="",
         const string &bracketrigth ="",
         CA fcolorbracket =CA::F_DEFAULT,
@@ -169,7 +169,7 @@ namespace pl {
         bcolorbracket_ = bcolorbracket;
     }
 
-    auto Bar::set_color_block(
+    auto Bar::set_bar_color_block(
         CA fcolorblock =CA::F_DEFAULT,
         CA bcolorblock =CA::B_DEFAULT)
         -> void
@@ -178,7 +178,7 @@ namespace pl {
         bcolorblock_ = bcolorblock;
     }
 
-    auto Bar::set_color_backing(
+    auto Bar::set_bar_color_backing(
         CA fcolorbacking =CA::F_DEFAULT,
         CA bcolorbacking =CA::B_DEFAULT)
         -> void
@@ -190,13 +190,13 @@ namespace pl {
     auto Bar::set_bar(BarDrawings bar =BarDrawings::BAR_PROGRESS_BAR) -> void
     {bar_ = bar;}
 
-    auto Bar::set_block_backing(BarBlock block, BarBacking backing) -> void
+    auto Bar::set_bar_block_backing(BarBlock block, BarBacking backing) -> void
     {
         block_ = block;
         backing_ = backing;
     }
 
-    auto Bar::set_counter(
+    auto Bar::set_bar_counter(
         int y =-1,
         int x =-1,
         const std::string &counter ="",
@@ -213,7 +213,7 @@ namespace pl {
         counterattr_ = counterattr;
     }
 
-    auto Bar::set_message(
+    auto Bar::set_bar_message(
         int y =-1,
         int x =-1,
         const std::string &message ="",
@@ -230,10 +230,10 @@ namespace pl {
         messageattr_ = messageattr;
     }
 
-    auto Bar::get_min() -> int const
+    auto Bar::get_bar_min() -> int const
     {return miniterations_;}
 
-    auto Bar::get_max() -> int const
+    auto Bar::get_bar_max() -> int const
     {return maxiterations_;}
 
     auto Bar::update(int index) -> void const
