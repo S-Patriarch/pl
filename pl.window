@@ -2,12 +2,12 @@
  * Copyright (C) 2025, S-Patriarch
  * Patriarch library : pl::Window
  *
- * set_color_window() - установка атрибутов цвета окна
- * set_color_window_256() - установка атрибутов цвета окна
- * set_color_title() - установка атрибутов цвета заголовка окна
- * set_color_text() - установка атрибутов цвета текста окна
- * set_frame() - установка рамки окна
- * set_title() - установка заголовка окна
+ * set_window_color() - установка атрибутов цвета окна
+ * set_window_color_256() - установка атрибутов цвета окна
+ * set_window_color_title() - установка атрибутов цвета заголовка окна
+ * set_window_color_text() - установка атрибутов цвета текста окна
+ * set_window_frame() - установка рамки окна
+ * set_window_title() - установка заголовка окна
  * wdraw() - отрисовка окна
  * wclose() - закрытие окна
  * wout() - вывод информации в окно
@@ -56,12 +56,12 @@ namespace pl {
         Window(int, int, int, int);
         virtual ~Window() noexcept =default;
 
-        auto set_color_window(CA, CA) -> void;
-        auto set_color_window_256(int, int) -> void;
-        auto set_color_title(CA, CA, const string &) -> void;
-        auto set_color_text(CA, CA, const string &) -> void;
-        auto set_frame(BoxDrawings) -> void;
-        auto set_title(const string &, Location) -> void;
+        auto set_window_color(CA, CA) -> void;
+        auto set_window_color_256(int, int) -> void;
+        auto set_window_color_title(CA, CA, const string &) -> void;
+        auto set_window_color_text(CA, CA, const string &) -> void;
+        auto set_window_frame(BoxDrawings) -> void;
+        auto set_window_title(const string &, Location) -> void;
 
         auto wdraw() -> void const;
         auto wclose() -> void const;
@@ -118,19 +118,19 @@ namespace pl {
         textcountmax_ = height_-2;
     }
 
-    auto Window::set_color_window(CA fcolor, CA bcolor) -> void
+    auto Window::set_window_color(CA fcolor, CA bcolor) -> void
     {
         fcolorwin_ = fcolor;
         bcolorwin_ = bcolor;
     }
 
-    auto Window::set_color_window_256(int fcolor, int bcolor) -> void
+    auto Window::set_window_color_256(int fcolor, int bcolor) -> void
     {
         fcolor256_ = "\033[38;5;"+std::to_string(fcolor)+"m";
         bcolor256_ = "\033[48;5;"+std::to_string(bcolor)+"m";
     }
 
-    auto Window::set_color_title(
+    auto Window::set_window_color_title(
         CA fcolor =CA::F_DEFAULT,
         CA bcolor =CA::B_DEFAULT,
         const string &titleattr ="")
@@ -141,7 +141,7 @@ namespace pl {
         titleattr_   = titleattr;
     }
 
-    auto Window::set_color_text(
+    auto Window::set_window_color_text(
         CA fcolor =CA::F_DEFAULT,
         CA bcolor =CA::B_DEFAULT,
         const string &textattr ="")
@@ -152,10 +152,10 @@ namespace pl {
         textattr_   = textattr;
     }
 
-    auto Window::set_frame(BoxDrawings frame) -> void
+    auto Window::set_window_frame(BoxDrawings frame) -> void
     {frame_ = frame;}
 
-    auto Window::set_title(
+    auto Window::set_window_title(
         const string &title,
         Location titlelocation =Location::WINDOW_LOCATION_LEFT)
         -> void
