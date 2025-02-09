@@ -11,7 +11,7 @@
  * set_bar_color_backing() - установка атрибутов цвета подложки и ее фона
  * set_bar() - установка типа отрисовки индикатора
  * set_bar_block_backing() - установка блока и подложки
- * set_bar_counter() -
+ * set_bar_counter() - установка единиц счетчика индикатора
  * set_bar_message() - установка сообщения индикатора
  * get_bar_min() - возврат минимальной границы итерации
  * get_bar_max() - возврат максимальной границы итерации
@@ -41,7 +41,9 @@ namespace pl {
     class Bar : public Conio {
     public:
         enum BarDrawings {
-            BAR_PROGRESS_BAR
+            BAR_DRAWINGS_PROGRESS,
+            BAR_DRAWINGS_COUNTER,
+            BAR_DRAWINGS_SPINNER
         };
 
         enum BarBlock {
@@ -105,17 +107,19 @@ namespace pl {
         int width_  {30};                  // ширина индикатора
 
         int miniterations_ {0};            // минимальная итерация
-        int maxiterations_ {100};          // минимальная итерация
+        int maxiterations_ {100};          // максимальная итерация
+        int spinneriterations_ {0};        // итерация spinner
 
-        int countery_ {-1};
-        int counterx_ {-1};
+        int countery_ {-1};                // координата y единицы счетчика
+        int counterx_ {-1};                // координата x единицы счетчика
         int messagey_ {-1};                // координата y сообщения
         int messagex_ {-1};                // координата x сообщения
 
         string bracketleft_  {""};         // левая граница индикатора
         string bracketrigth_ {""};         // правая граница индикатора
-        string counter_      {""};
+        string counter_      {""};         // единицы счетчика индикатора
         string message_      {""};         // сообщение индикатора
+        string spinner_      {"|/-\\"};    // составные части spinner
 
         CA fcolorblock_   {CA::F_DEFAULT}; // цвет блока
         CA bcolorblock_   {CA::B_DEFAULT}; // цвет фона блока
@@ -123,15 +127,15 @@ namespace pl {
         CA bcolorbacking_ {CA::B_DEFAULT}; // цвет фона подложки индикатора
         CA fcolorbracket_ {CA::F_DEFAULT}; // цвет границы индикатора
         CA bcolorbracket_ {CA::B_DEFAULT}; // цвет фона границы индикатора
-        CA fcolorcounter_ {CA::F_DEFAULT};
-        CA bcolorcounter_ {CA::B_DEFAULT};
+        CA fcolorcounter_ {CA::F_DEFAULT}; // цвет единицы счетчика
+        CA bcolorcounter_ {CA::B_DEFAULT}; // цвет фона единицы счетчика
         CA fcolormessage_ {CA::F_DEFAULT}; // цвет текста сообщения
         CA bcolormessage_ {CA::B_DEFAULT}; // цвет фона сообщения
 
-        CA counterattr_ {CA::RESET};
-        CA messageattr_ {CA::RESET};
+        CA counterattr_ {CA::RESET};       // дополнительный атрибут единицы счетчика
+        CA messageattr_ {CA::RESET};       // дополнительный атрибут сообщения
 
-        BarDrawings bar_ {BarDrawings::BAR_PROGRESS_BAR};
+        BarDrawings bar_ {BarDrawings::BAR_DRAWINGS_PROGRESS};
 
         BarBlock block_ {BarBlock::BAR_BLOCK_FULL_BLOCK};
         BarBacking backing_ {BarBacking::BAR_BACKING_LIGHT_SHADE};
@@ -187,7 +191,7 @@ namespace pl {
         bcolorbacking_ = bcolorbacking;
     }
 
-    auto Bar::set_bar(BarDrawings bar =BarDrawings::BAR_PROGRESS_BAR) -> void
+    auto Bar::set_bar(BarDrawings bar =BarDrawings::BAR_DRAWINGS_PROGRESS) -> void
     {bar_ = bar;}
 
     auto Bar::set_bar_block_backing(BarBlock block, BarBacking backing) -> void
@@ -238,14 +242,14 @@ namespace pl {
 
     auto Bar::update(int index) -> void const
     {
-        if (bar_==BarDrawings::BAR_PROGRESS_BAR) {
-            // вычисляем процент выполнения
-            double progress = static_cast<double>(index) / maxiterations_;
-            int completedwidth = static_cast<int>(progress * width_);
+        // вычисляем процент выполнения
+        double progress = static_cast<double>(index) / maxiterations_;
+        int completedwidth = static_cast<int>(progress * width_);
 
-            if (starty_>=0 && startx_>=0)
-                cursor_move(starty_, startx_);
+        if (starty_>=0 && startx_>=0)
+            cursor_move(starty_, startx_);
 
+        if (bar_==BarDrawings::BAR_DRAWINGS_PROGRESS) {
             res_attr();
             set_color(fcolorbracket_);
             set_color(bcolorbracket_);
@@ -299,38 +303,75 @@ namespace pl {
             set_color(bcolorbracket_);
             cout << bracketrigth_;
 
-            if (countery_>=0 && counterx_>=0 && counter_!="") {
+            if (counter_!="") {
                 res_attr();
                 set_color(fcolorcounter_);
                 set_color(bcolorcounter_);
+
                 if (counterattr_!=CA::RESET) {
                     set_attr_mode(counterattr_);
                 }
-                cursor_move(countery_, counterx_);
+                if (countery_>=0 && counterx_>=0) {
+                    cursor_move(countery_, counterx_);
+                }
+                else {cout << " ";}
                 cout
                     << (size_t)(progress * 100.0)
                     << counter_;
             }
-
-            if (messagey_>=0 && messagex_>=0 && message_!="") {
-                res_attr();
-                set_color(fcolormessage_);
-                set_color(bcolormessage_);
-                if (messageattr_!=CA::RESET) {
-                    set_attr_mode(messageattr_);
-                }
-                cursor_move(messagey_, messagex_);
-                cout << message_;
-            }
-
-            res_attr();
-            if (starty_>=0 && startx_>=0)
-                cursor_move(starty_, startx_);
-            else
-                cout << "\r";
-
-            cout.flush();
         }
+
+        if (bar_==BarDrawings::BAR_DRAWINGS_COUNTER) {
+            res_attr();
+            set_color(fcolorblock_);
+            set_color(bcolorblock_);
+
+            cout << (size_t)(progress * 100.0);
+
+            if (counter_!="") {
+                res_attr();
+                set_color(fcolorcounter_);
+                set_color(bcolorcounter_);
+
+                if (counterattr_!=CA::RESET) {
+                    set_attr_mode(counterattr_);
+                }
+                if (countery_>=0 && counterx_>=0) {
+                    cursor_move(countery_, counterx_);
+                }
+                cout << counter_;
+            }
+        }
+
+        if (bar_==BarDrawings::BAR_DRAWINGS_SPINNER) {
+            res_attr();
+            set_color(fcolorblock_);
+            set_color(bcolorblock_);
+
+            cout << spinner_.at(spinneriterations_++);
+            if (spinneriterations_==4) spinneriterations_ = 0;
+        }
+
+        if (message_!="") {
+            res_attr();
+            set_color(fcolormessage_);
+            set_color(bcolormessage_);
+
+            if (messageattr_!=CA::RESET) {
+                set_attr_mode(messageattr_);
+            }
+            if (messagey_>=0 && messagex_>=0) {
+                cursor_move(messagey_, messagex_);
+            }
+            cout << message_;
+        }
+
+        if (starty_<0 && startx_<0) {
+            res_attr();
+            cout << "\r";
+        }
+
+        cout.flush();
     }
 
 }
