@@ -13,6 +13,7 @@
  * set_bar_block_backing() - установка блока и подложки
  * set_bar_counter() - установка единиц счетчика индикатора
  * set_bar_message() - установка сообщения индикатора
+ * set_bar_color_256_background() - установка атрибутов цвета фона
  * get_bar_min() - возврат минимальной границы итерации
  * get_bar_max() - возврат максимальной границы итерации
  * update() - обновление отрисовки индикатора выполнения
@@ -95,6 +96,7 @@ namespace pl {
         auto set_bar_block_backing(BarBlock, BarBacking) -> void;
         auto set_bar_counter(int, int, const string &, CA, CA, CA) -> void;
         auto set_bar_message(int, int, const string &, CA, CA, CA) -> void;
+        auto set_bar_color_256_background(int) -> void;
 
         auto get_bar_min() -> int const;
         auto get_bar_max() -> int const;
@@ -114,6 +116,8 @@ namespace pl {
         int counterx_ {-1};                // координата x единицы счетчика
         int messagey_ {-1};                // координата y сообщения
         int messagex_ {-1};                // координата x сообщения
+
+        string bcolor256_ {};
 
         string bracketleft_  {""};         // левая граница индикатора
         string bracketrigth_ {""};         // правая граница индикатора
@@ -234,6 +238,9 @@ namespace pl {
         messageattr_ = messageattr;
     }
 
+    auto Bar::set_bar_color_256_background(int bcolor) -> void
+    {bcolor256_ = "\033[48;5;"+std::to_string(bcolor)+"m";}
+
     auto Bar::get_bar_min() -> int const
     {return miniterations_;}
 
@@ -251,15 +258,27 @@ namespace pl {
 
         if (bar_==BarDrawings::BAR_DRAWINGS_PROGRESS) {
             res_attr();
-            set_color(fcolorbracket_);
-            set_color(bcolorbracket_);
+            if (bcolor256_!="") {
+                set_color(fcolorbracket_);
+                set_attr(bcolor256_);
+            }
+            else {
+                set_color(fcolorbracket_);
+                set_color(bcolorbracket_);
+            }
             cout << bracketleft_;
 
             for (size_t i{0}; i<=width_; ++i) {
                 if (i <= completedwidth) {
                     res_attr();
-                    set_color(fcolorblock_);
-                    set_color(bcolorblock_);
+                    if (bcolor256_!="") {
+                        set_color(fcolorblock_);
+                        set_attr(bcolor256_);
+                    }
+                    else {
+                        set_color(fcolorblock_);
+                        set_color(bcolorblock_);
+                    }
                     if (block_==BarBlock::BAR_BLOCK_LATTICE) cout << "#";
                     if (block_==BarBlock::BAR_BLOCK_STAR) cout << "*";
                     if (block_==BarBlock::BAR_BLOCK_EQUALS) cout << "=";
@@ -276,8 +295,14 @@ namespace pl {
                 }
                 else {
                     res_attr();
-                    set_color(fcolorbacking_);
-                    set_color(bcolorbacking_);
+                    if (bcolor256_!="") {
+                        set_color(fcolorbacking_);
+                        set_attr(bcolor256_);
+                    }
+                    else {
+                        set_color(fcolorbacking_);
+                        set_color(bcolorbacking_);
+                    }
                     if (backing_==BarBacking::BAR_BACKING_SPACE) cout << " ";
                     if (backing_==BarBacking::BAR_BACKING_POINT) cout << ".";
                     if (backing_==BarBacking::BAR_BACKING_MINUS) cout << "-";
@@ -299,15 +324,26 @@ namespace pl {
             }
 
             res_attr();
-            set_color(fcolorbracket_);
-            set_color(bcolorbracket_);
+            if (bcolor256_!="") {
+                set_color(fcolorbracket_);
+                set_attr(bcolor256_);
+            }
+            else {
+                set_color(fcolorbracket_);
+                set_color(bcolorbracket_);
+            }
             cout << bracketrigth_;
 
             if (counter_!="") {
                 res_attr();
-                set_color(fcolorcounter_);
-                set_color(bcolorcounter_);
-
+                if (bcolor256_!="") {
+                    set_color(fcolorcounter_);
+                    set_attr(bcolor256_);
+                }
+                else {
+                    set_color(fcolorcounter_);
+                    set_color(bcolorcounter_);
+                }
                 if (counterattr_!=CA::RESET) {
                     set_attr_mode(counterattr_);
                 }
@@ -323,16 +359,26 @@ namespace pl {
 
         if (bar_==BarDrawings::BAR_DRAWINGS_COUNTER) {
             res_attr();
-            set_color(fcolorblock_);
-            set_color(bcolorblock_);
-
+            if (bcolor256_!="") {
+                set_color(fcolorblock_);
+                set_attr(bcolor256_);
+            }
+            else {
+                set_color(fcolorblock_);
+                set_color(bcolorblock_);
+            }
             cout << (size_t)(progress * 100.0);
 
             if (counter_!="") {
                 res_attr();
-                set_color(fcolorcounter_);
-                set_color(bcolorcounter_);
-
+                if (bcolor256_!="") {
+                    set_color(fcolorcounter_);
+                    set_attr(bcolor256_);
+                }
+                else {
+                    set_color(fcolorcounter_);
+                    set_color(bcolorcounter_);
+                }
                 if (counterattr_!=CA::RESET) {
                     set_attr_mode(counterattr_);
                 }
@@ -345,8 +391,14 @@ namespace pl {
 
         if (bar_==BarDrawings::BAR_DRAWINGS_SPINNER) {
             res_attr();
-            set_color(fcolorblock_);
-            set_color(bcolorblock_);
+            if (bcolor256_!="") {
+                set_color(fcolorblock_);
+                set_attr(bcolor256_);
+            }
+            else {
+                set_color(fcolorblock_);
+                set_color(bcolorblock_);
+            }
 
             cout << spinner_.at(spinneriterations_++);
             if (spinneriterations_==4) spinneriterations_ = 0;
@@ -354,8 +406,14 @@ namespace pl {
 
         if (message_!="") {
             res_attr();
-            set_color(fcolormessage_);
-            set_color(bcolormessage_);
+            if (bcolor256_!="") {
+                set_color(fcolormessage_);
+                set_attr(bcolor256_);
+            }
+            else {
+                set_color(fcolormessage_);
+                set_color(bcolormessage_);
+            }
 
             if (messageattr_!=CA::RESET) {
                 set_attr_mode(messageattr_);
