@@ -258,27 +258,19 @@ namespace pl {
 
         if (bar_==BarDrawings::BAR_DRAWINGS_PROGRESS) {
             res_attr();
-            if (bcolor256_!="") {
-                set_color(fcolorbracket_);
-                set_attr(bcolor256_);
-            }
-            else {
-                set_color(fcolorbracket_);
-                set_color(bcolorbracket_);
-            }
+            set_color(fcolorbracket_);
+            if (bcolor256_!="") {set_attr(bcolor256_);}
+            else {set_color(bcolorbracket_);}
+
             cout << bracketleft_;
 
             for (size_t i{0}; i<=width_; ++i) {
                 if (i <= completedwidth) {
                     res_attr();
-                    if (bcolor256_!="") {
-                        set_color(fcolorblock_);
-                        set_attr(bcolor256_);
-                    }
-                    else {
-                        set_color(fcolorblock_);
-                        set_color(bcolorblock_);
-                    }
+                    set_color(fcolorblock_);
+                    if (bcolor256_!="") {set_attr(bcolor256_);}
+                    else {set_color(bcolorblock_);}
+
                     if (block_==BarBlock::BAR_BLOCK_LATTICE) cout << "#";
                     if (block_==BarBlock::BAR_BLOCK_STAR) cout << "*";
                     if (block_==BarBlock::BAR_BLOCK_EQUALS) cout << "=";
@@ -295,14 +287,10 @@ namespace pl {
                 }
                 else {
                     res_attr();
-                    if (bcolor256_!="") {
-                        set_color(fcolorbacking_);
-                        set_attr(bcolor256_);
-                    }
-                    else {
-                        set_color(fcolorbacking_);
-                        set_color(bcolorbacking_);
-                    }
+                    set_color(fcolorbacking_);
+                    if (bcolor256_!="") {set_attr(bcolor256_);}
+                    else {set_color(bcolorbacking_);}
+
                     if (backing_==BarBacking::BAR_BACKING_SPACE) cout << " ";
                     if (backing_==BarBacking::BAR_BACKING_POINT) cout << ".";
                     if (backing_==BarBacking::BAR_BACKING_MINUS) cout << "-";
@@ -324,33 +312,22 @@ namespace pl {
             }
 
             res_attr();
-            if (bcolor256_!="") {
-                set_color(fcolorbracket_);
-                set_attr(bcolor256_);
-            }
-            else {
-                set_color(fcolorbracket_);
-                set_color(bcolorbracket_);
-            }
+            set_color(fcolorbracket_);
+            if (bcolor256_!="") {set_attr(bcolor256_);}
+            else {set_color(bcolorbracket_);}
+
             cout << bracketrigth_;
 
             if (counter_!="") {
                 res_attr();
-                if (bcolor256_!="") {
-                    set_color(fcolorcounter_);
-                    set_attr(bcolor256_);
-                }
-                else {
-                    set_color(fcolorcounter_);
-                    set_color(bcolorcounter_);
-                }
-                if (counterattr_!=CA::RESET) {
-                    set_attr_mode(counterattr_);
-                }
-                if (countery_>=0 && counterx_>=0) {
-                    cursor_move(countery_, counterx_);
-                }
+                set_color(fcolorcounter_);
+                if (bcolor256_!="") {set_attr(bcolor256_);}
+                else {set_color(bcolorcounter_);}
+
+                if (counterattr_!=CA::RESET) {set_attr_mode(counterattr_);}
+                if (countery_>=0 && counterx_>=0) {cursor_move(countery_, counterx_);}
                 else {cout << " ";}
+
                 cout
                     << (size_t)(progress * 100.0)
                     << counter_;
@@ -359,46 +336,30 @@ namespace pl {
 
         if (bar_==BarDrawings::BAR_DRAWINGS_COUNTER) {
             res_attr();
-            if (bcolor256_!="") {
-                set_color(fcolorblock_);
-                set_attr(bcolor256_);
-            }
-            else {
-                set_color(fcolorblock_);
-                set_color(bcolorblock_);
-            }
+            set_color(fcolorblock_);
+            if (bcolor256_!="") {set_attr(bcolor256_);}
+            else {set_color(bcolorblock_);}
+
             cout << (size_t)(progress * 100.0);
 
             if (counter_!="") {
                 res_attr();
-                if (bcolor256_!="") {
-                    set_color(fcolorcounter_);
-                    set_attr(bcolor256_);
-                }
-                else {
-                    set_color(fcolorcounter_);
-                    set_color(bcolorcounter_);
-                }
-                if (counterattr_!=CA::RESET) {
-                    set_attr_mode(counterattr_);
-                }
-                if (countery_>=0 && counterx_>=0) {
-                    cursor_move(countery_, counterx_);
-                }
+                set_color(fcolorcounter_);
+                if (bcolor256_!="") {set_attr(bcolor256_);}
+                else {set_color(bcolorcounter_);}
+
+                if (counterattr_!=CA::RESET) {set_attr_mode(counterattr_);}
+                if (countery_>=0 && counterx_>=0) {cursor_move(countery_, counterx_);}
+
                 cout << counter_;
             }
         }
 
         if (bar_==BarDrawings::BAR_DRAWINGS_SPINNER) {
             res_attr();
-            if (bcolor256_!="") {
-                set_color(fcolorblock_);
-                set_attr(bcolor256_);
-            }
-            else {
-                set_color(fcolorblock_);
-                set_color(bcolorblock_);
-            }
+            set_color(fcolorblock_);
+            if (bcolor256_!="") {set_attr(bcolor256_);}
+            else {set_color(bcolorblock_);}
 
             cout << spinner_.at(spinneriterations_++);
             if (spinneriterations_==4) spinneriterations_ = 0;
@@ -406,21 +367,13 @@ namespace pl {
 
         if (message_!="") {
             res_attr();
-            if (bcolor256_!="") {
-                set_color(fcolormessage_);
-                set_attr(bcolor256_);
-            }
-            else {
-                set_color(fcolormessage_);
-                set_color(bcolormessage_);
-            }
+            set_color(fcolormessage_);
+            if (bcolor256_!="") {set_attr(bcolor256_);}
+            else {set_color(bcolormessage_);}
 
-            if (messageattr_!=CA::RESET) {
-                set_attr_mode(messageattr_);
-            }
-            if (messagey_>=0 && messagex_>=0) {
-                cursor_move(messagey_, messagex_);
-            }
+            if (messageattr_!=CA::RESET) {set_attr_mode(messageattr_);}
+            if (messagey_>=0 && messagex_>=0) {cursor_move(messagey_, messagex_);}
+
             cout << message_;
         }
 

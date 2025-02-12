@@ -3,7 +3,7 @@
  * Patriarch library : pl::Line
  *
  * set_line_color() - установка атрибутов цвета линии
- * set_line_color_256() - установка атрибутов цвета линии
+ * set_line_color_256_background() - установка атрибутов цвета фона
  * set_line_yx() - установка начальных координат линии
  * set_line_length() - установка длины линии
  * set_line_view() - установка вида линии
@@ -47,7 +47,7 @@ namespace pl {
         virtual ~Line() noexcept =default;
 
         auto set_line_color(CA, CA) -> void;
-        auto set_line_color_256(int, int) -> void;
+        auto set_line_color_256_background(int) -> void;
         auto set_line_yx(int, int) -> void;
         auto set_line_length(int) -> void;
         auto set_line_view(LineDrawings) -> void;
@@ -59,8 +59,7 @@ namespace pl {
         int startx_;                    // координата x начала линии
         int length_;                    // длина линии
 
-        string fcolorline256_ {};
-        string bcolorline256_ {};
+        string bcolor256_ {};
 
         LineDrawings  line_;            // вид линии
         LineDirection direction_;       // направление линии
@@ -86,11 +85,8 @@ namespace pl {
         bcolorline_ = bcolor;
     }
 
-    auto Line::set_line_color_256(int fcolor, int bcolor) -> void
-    {
-        fcolorline256_ = "\033[38;5;"+std::to_string(fcolor)+"m";
-        bcolorline256_ = "\033[48;5;"+std::to_string(bcolor)+"m";
-    }
+    auto Line::set_line_color_256_background(int bcolor) -> void
+    {bcolor256_ = "\033[48;5;"+std::to_string(bcolor)+"m";}
 
     auto Line::set_line_yx(int y, int x) -> void
     {
@@ -110,14 +106,9 @@ namespace pl {
     auto Line::ldraw() -> void const
     {
         res_attr();
-        if (fcolorline256_!="" && bcolorline256_!="") {
-            set_attr(fcolorline256_);
-            set_attr(bcolorline256_);
-        }
-        else {
-            set_color(fcolorline_);
-            set_color(bcolorline_);
-        }
+        set_color(fcolorline_);
+        if (bcolor256_!="") {set_attr(bcolor256_);}
+        else {set_color(bcolorline_);}
 
         if (direction_==LineDirection::LINE_HORIZONTAL) {
             for (size_t i =0; i!=length_; ++i) {

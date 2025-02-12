@@ -3,7 +3,7 @@
  * Patriarch library : pl::Window
  *
  * set_window_color() - установка атрибутов цвета окна
- * set_window_color_256() - установка атрибутов цвета окна
+ * set_window_color_256_background() - установка атрибутов цвета фона
  * set_window_color_title() - установка атрибутов цвета заголовка окна
  * set_window_color_text() - установка атрибутов цвета текста окна
  * set_window_frame() - установка рамки окна
@@ -57,7 +57,7 @@ namespace pl {
         virtual ~Window() noexcept =default;
 
         auto set_window_color(CA, CA) -> void;
-        auto set_window_color_256(int, int) -> void;
+        auto set_window_color_256_background(int) -> void;
         auto set_window_color_title(CA, CA, const string &) -> void;
         auto set_window_color_text(CA, CA, const string &) -> void;
         auto set_window_frame(BoxDrawings) -> void;
@@ -77,7 +77,6 @@ namespace pl {
         string titleattr_ {};            // свободный атрибут заголовка окна
         string textattr_ {};             // свободный атрибут текста окна
 
-        string fcolor256_ {};
         string bcolor256_ {};
 
         BoxDrawings frame_;              // вид рамки окна
@@ -124,11 +123,8 @@ namespace pl {
         bcolorwin_ = bcolor;
     }
 
-    auto Window::set_window_color_256(int fcolor, int bcolor) -> void
-    {
-        fcolor256_ = "\033[38;5;"+std::to_string(fcolor)+"m";
-        bcolor256_ = "\033[48;5;"+std::to_string(bcolor)+"m";
-    }
+    auto Window::set_window_color_256_background(int bcolor) -> void
+    {bcolor256_ = "\033[48;5;"+std::to_string(bcolor)+"m";}
 
     auto Window::set_window_color_title(
         CA fcolor =CA::F_DEFAULT,
@@ -168,14 +164,9 @@ namespace pl {
     {
         if (title_!="") {
             res_attr();
-            if (fcolor256_!="" && bcolor256_!="") {
-                set_attr(fcolor256_);
-                set_attr(bcolor256_);
-            }
-            else {
-                set_color(fcolortitle_);
-                set_color(bcolortitle_);
-            }
+            set_color(fcolortitle_);
+            if (bcolor256_!="") {set_attr(bcolor256_);}
+            else {set_color(bcolortitle_);}
 
             if (titleattr_!="") cout << titleattr_;
 
@@ -194,14 +185,9 @@ namespace pl {
     auto Window::wdraw() -> void const
     {
         res_attr();
-        if (fcolor256_!="" && bcolor256_!="") {
-            set_attr(fcolor256_);
-            set_attr(bcolor256_);
-        }
-        else {
-            set_color(fcolorwin_);
-            set_color(bcolorwin_);
-        }
+        set_color(fcolorwin_);
+        if (bcolor256_!="") {set_attr(bcolor256_);}
+        else {set_color(bcolorwin_);}
 
         for (size_t i =0; i!=height_; ++i) {
             for (size_t j =0; j!=width_; ++j) {
@@ -291,21 +277,14 @@ namespace pl {
     }
 
     auto Window::wclose() -> void const
-    {
-        res_attr();
-    }
+    {res_attr();}
 
     auto Window::wout(const string &stext) -> void const
     {
         res_attr();
-        if (fcolor256_!="" && bcolor256_!="") {
-            set_attr(fcolor256_);
-            set_attr(bcolor256_);
-        }
-        else {
-            set_color(fcolortext_);
-            set_color(bcolortext_);
-        }
+        set_color(fcolortext_);
+        if (bcolor256_!="") {set_attr(bcolor256_);}
+        else {set_color(bcolortext_);}
 
         int y = starty_+1;
         int x = startx_+2;
