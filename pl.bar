@@ -110,7 +110,7 @@ namespace pl {
 
         int miniterations_ {0};            // минимальная итерация
         int maxiterations_ {100};          // максимальная итерация
-        int spinneriterations_ {0};        // итерация spinner
+        int bariterations_ {0};            // итератор бара
 
         int countery_ {-1};                // координата y единицы счетчика
         int counterx_ {-1};                // координата x единицы счетчика
@@ -361,8 +361,8 @@ namespace pl {
             if (bcolor256_!="") {set_attr(bcolor256_);}
             else {set_color(bcolorblock_);}
 
-            cout << spinner_.at(spinneriterations_++);
-            if (spinneriterations_==4) spinneriterations_ = 0;
+            cout << spinner_.at(bariterations_++);
+            if (bariterations_==4) bariterations_ = 0;
         }
 
         if (message_!="") {
