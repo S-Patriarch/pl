@@ -14,6 +14,7 @@
  * set_bar_counter() - установка единиц счетчика индикатора
  * set_bar_message() - установка сообщения индикатора
  * set_bar_color_256_background() - установка атрибутов цвета фона
+ * set_bar_points() - установка параметров индикатора points
  * get_bar_min() - возврат минимальной границы итерации
  * get_bar_max() - возврат максимальной границы итерации
  * update() - обновление отрисовки индикатора выполнения
@@ -25,6 +26,8 @@
 #include <iostream>
 #include <cstddef>
 #include <string>
+#include <thread>
+#include <chrono>
 
 #ifndef PL_CONIO
 #include "pl.conio"
@@ -44,7 +47,8 @@ namespace pl {
         enum BarDrawings {
             BAR_DRAWINGS_PROGRESS,
             BAR_DRAWINGS_COUNTER,
-            BAR_DRAWINGS_SPINNER
+            BAR_DRAWINGS_SPINNER,
+            BAR_DRAWINGS_POINTS
         };
 
         enum BarBlock {
@@ -97,6 +101,7 @@ namespace pl {
         auto set_bar_counter(int, int, const string &, CA, CA, CA) -> void;
         auto set_bar_message(int, int, const string &, CA, CA, CA) -> void;
         auto set_bar_color_256_background(int) -> void;
+        auto set_bar_points(int, int) -> void;
 
         auto get_bar_min() -> int const;
         auto get_bar_max() -> int const;
@@ -116,6 +121,9 @@ namespace pl {
         int counterx_ {-1};                // координата x единицы счетчика
         int messagey_ {-1};                // координата y сообщения
         int messagex_ {-1};                // координата x сообщения
+
+        int numpoints_ {3};                // количество точек индикатора points
+        int nummillisec_ {200};            // задержка points в milliseconds
 
         string bcolor256_ {};
 
@@ -241,6 +249,12 @@ namespace pl {
     auto Bar::set_bar_color_256_background(int bcolor) -> void
     {bcolor256_ = "\033[48;5;"+std::to_string(bcolor)+"m";}
 
+    auto Bar::set_bar_points(int numpoints, int nummillisec =200) -> void
+    {
+        numpoints_ = numpoints;
+        nummillisec_ = nummillisec;
+    }
+
     auto Bar::get_bar_min() -> int const
     {return miniterations_;}
 
@@ -340,7 +354,7 @@ namespace pl {
             if (bcolor256_!="") {set_attr(bcolor256_);}
             else {set_color(bcolorblock_);}
 
-            cout << (size_t)(progress * 100.0);
+            cout << (size_t)index;
 
             if (counter_!="") {
                 res_attr();
@@ -365,21 +379,46 @@ namespace pl {
             if (bariterations_==4) bariterations_ = 0;
         }
 
-        if (message_!="") {
+        if (bar_==BarDrawings::BAR_DRAWINGS_POINTS) {
             res_attr();
-            set_color(fcolormessage_);
+            set_color(fcolorblock_);
             if (bcolor256_!="") {set_attr(bcolor256_);}
-            else {set_color(bcolormessage_);}
+            else {set_color(bcolorblock_);}
 
-            if (messageattr_!=CA::RESET) {set_attr_mode(messageattr_);}
-            if (messagey_>=0 && messagex_>=0) {cursor_move(messagey_, messagex_);}
+            if (starty_<0 && startx_<0 && bariterations_==1) {
+                cursor_backward(numpoints_);
+            }
 
-            cout << message_;
+            string str {};
+            for (size_t i{0}; i!=numpoints_; ++i) {str += " ";}
+            cout << str << std::flush;
+            cursor_backward(numpoints_);
+
+            for (size_t i{0}; i!=numpoints_; ++i) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+                cout << "." << std::flush;
+            }
+            bariterations_ = 1;
+        }
+
+        if (bar_!=BarDrawings::BAR_DRAWINGS_POINTS) {
+            if (message_!="") {
+                res_attr();
+                set_color(fcolormessage_);
+                if (bcolor256_!="") {set_attr(bcolor256_);}
+                else {set_color(bcolormessage_);}
+
+                if (messageattr_!=CA::RESET) {set_attr_mode(messageattr_);}
+                if (messagey_>=0 && messagex_>=0) {cursor_move(messagey_, messagex_);}
+
+                cout << message_;
+            }
         }
 
         if (starty_<0 && startx_<0) {
             res_attr();
-            cout << "\r";
+            if (bar_!=BarDrawings::BAR_DRAWINGS_POINTS)
+                cout << "\r";
         }
 
         cout.flush();
