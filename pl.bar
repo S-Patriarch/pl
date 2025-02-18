@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025, S-Patriarch
+ * (C) 2025, S-Patriarch
  * Patriarch library : pl::Bar
  *
  * set_bar_yx() - установка начальных координат
@@ -15,6 +15,7 @@
  * set_bar_message() - установка сообщения индикатора
  * set_bar_color_256_background() - установка атрибутов цвета фона
  * set_bar_points() - установка параметров индикатора points
+ * set_bar_wave() - установка параметров индикатора wave
  * get_bar_min() - возврат минимальной границы итерации
  * get_bar_max() - возврат максимальной границы итерации
  * update() - обновление отрисовки индикатора выполнения
@@ -37,6 +38,7 @@ namespace pl {
 
     using std::cout;
     using std::endl;
+    using std::flush;
     using std::string;
     using std::size_t;
 
@@ -48,7 +50,8 @@ namespace pl {
             BAR_DRAWINGS_PROGRESS,
             BAR_DRAWINGS_COUNTER,
             BAR_DRAWINGS_SPINNER,
-            BAR_DRAWINGS_POINTS
+            BAR_DRAWINGS_POINTS,
+            BAR_DRAWINGS_WAVE
         };
 
         enum BarBlock {
@@ -102,6 +105,7 @@ namespace pl {
         auto set_bar_message(int, int, const string &, CA, CA, CA) -> void;
         auto set_bar_color_256_background(int) -> void;
         auto set_bar_points(int, int) -> void;
+        auto set_bar_wave(int) -> void;
 
         auto get_bar_min() -> int const;
         auto get_bar_max() -> int const;
@@ -123,7 +127,7 @@ namespace pl {
         int messagex_ {-1};                // координата x сообщения
 
         int numpoints_ {3};                // количество точек индикатора points
-        int nummillisec_ {200};            // задержка points в milliseconds
+        int nummillisec_ {200};            // задержка в milliseconds
 
         string bcolor256_ {};
 
@@ -254,6 +258,9 @@ namespace pl {
         numpoints_ = numpoints;
         nummillisec_ = nummillisec;
     }
+
+    auto Bar::set_bar_wave(int nummillisec =50) -> void
+    {nummillisec_ = nummillisec;}
 
     auto Bar::get_bar_min() -> int const
     {return miniterations_;}
@@ -401,7 +408,48 @@ namespace pl {
             bariterations_ = 1;
         }
 
-        if (bar_!=BarDrawings::BAR_DRAWINGS_POINTS) {
+        if (bar_==BarDrawings::BAR_DRAWINGS_WAVE) {
+            res_attr();
+            set_color(fcolorblock_);
+            if (bcolor256_!="") {set_attr(bcolor256_);}
+            else {set_color(bcolorblock_);}
+
+            cout << "\u2581\u2581\u2581" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2581\u2582\u2584" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2582\u2584\u2586" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2584\u2586\u2588" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2586\u2588\u2588" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2588\u2588\u2586" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2588\u2586\u2584" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2586\u2584\u2582" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2584\u2582\u2581" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2582\u2581\u2581" << flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(nummillisec_));
+            cursor_backward(3);
+            cout << "\u2581\u2581\u2581" << flush;
+            cursor_backward(3);
+        }
+
+        if (bar_!=BarDrawings::BAR_DRAWINGS_POINTS ||
+            bar_!=BarDrawings::BAR_DRAWINGS_WAVE) {
             if (message_!="") {
                 res_attr();
                 set_color(fcolormessage_);
@@ -417,8 +465,10 @@ namespace pl {
 
         if (starty_<0 && startx_<0) {
             res_attr();
-            if (bar_!=BarDrawings::BAR_DRAWINGS_POINTS)
+            if (bar_!=BarDrawings::BAR_DRAWINGS_POINTS ||
+                bar_!=BarDrawings::BAR_DRAWINGS_WAVE) {
                 cout << "\r";
+            }
         }
 
         cout.flush();
